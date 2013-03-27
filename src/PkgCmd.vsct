@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidComponentDiagnosticsPackage">
+
+    <Buttons>
+
+      <Button guid="guidComponentDiagnosticsCmdSet" id="cmdidViewComponentDiagnosticsToolWindow" priority="0x07ff" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_HELP_SUPPORT"/>
+        <Icon guid="guidImages" id="bmpComponentDiagnosticsToolwindow" />
+        <Strings>
+          <ButtonText>Component &amp;Diagnostics</ButtonText>
+        </Strings>
+      </Button>
+
+    </Buttons>
+
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\Commands.png" usedList="bmpComponentDiagnosticsToolwindow"/>
+    </Bitmaps>
+
+  </Commands>
+
+  <Symbols>
+
+    <GuidSymbol name="guidComponentDiagnosticsPackage" value="{358da9fb-1568-3e9a-8ec9-e41a0d763fef}" />
+
+    <GuidSymbol name="guidComponentDiagnosticsCmdSet" value="{2112B0E0-26ED-4848-B325-F2E5192798B7}">
+      <IDSymbol name="cmdidViewComponentDiagnosticsToolWindow" value="0x0101" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{6818A78D-637F-4480-BC7F-CA90CCC878A3}" >
+      <IDSymbol name="bmpComponentDiagnosticsToolwindow" value="1" />
+    </GuidSymbol>
+
+  </Symbols>
+
+</CommandTable>

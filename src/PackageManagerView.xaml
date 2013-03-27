@@ -1,0 +1,61 @@
+﻿<Grid x:Class="Microsoft.VisualStudio.ComponentDiagnostics.PackageManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Microsoft.VisualStudio.ComponentDiagnostics"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+    </Grid.RowDefinitions>
+    <DockPanel Grid.Row="0">
+        <DockPanel.Resources>
+            <local:KilobytesConverter x:Key="vmConverter" />
+            <local:LoadReasonConverter x:Key="reasonConverter" />
+            <HierarchicalDataTemplate x:Key="nodeTemplate" ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Path=Timestamp, StringFormat={}{0:HH:mm:ss.fff}, Mode=OneTime}" Padding="0,0,4,0" />
+                    <TextBlock Foreground="Magenta" Text="{Binding Path=Reason, Converter={StaticResource reasonConverter}, Mode=OneTime}" Width="140" />
+                    <TextBlock Foreground="Blue" Text="{Binding Path=Duration, StringFormat={}{0:n0}ms, Mode=OneTime}" TextAlignment="Right" Width="50" />
+                    <TextBlock Foreground="Red" Text="{Binding Path=VM, Converter={StaticResource vmConverter}, Mode=OneTime}" TextAlignment="Right" Width="60"/>
+                    <TextBlock Padding="4,0,0,0" Text="{Binding Path=Package.Name, Mode=OneTime}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </DockPanel.Resources>
+        <TextBlock Padding="4" DockPanel.Dock="Top" Foreground="{DynamicResource {x:Static vsfx:VsBrushes.AutoHideTabTextKey}}" Background="{DynamicResource {x:Static vsfx:VsBrushes.AutoHideTabBackgroundHorizontalGradientKey}}" Text="Loaded Packages" />
+        <TreeView ItemsSource="{Binding LoadedPackages}" ItemTemplate="{StaticResource nodeTemplate}" />
+    </DockPanel>
+
+    <DockPanel Grid.Row="1">
+        <DockPanel.Resources>
+            <DataTemplate x:Key="isSitedCellTemplate">
+                <CheckBox IsChecked="{Binding IsSited, Mode=OneWay}" IsEnabled="False" />
+            </DataTemplate>
+        </DockPanel.Resources>
+        <TextBlock Padding="4" DockPanel.Dock="Top" Foreground="{DynamicResource {x:Static vsfx:VsBrushes.AutoHideTabTextKey}}" Background="{DynamicResource {x:Static vsfx:VsBrushes.AutoHideTabBackgroundHorizontalGradientKey}}">
+            <Run Text="{Binding Path=Packages.Count, Mode=OneTime}" /> registered packages
+        </TextBlock>
+        <local:SortableListView ItemsSource="{Binding Path=Packages}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" VirtualizingStackPanel.IsVirtualizing="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn CellTemplate="{StaticResource isSitedCellTemplate}">
+                        <GridViewColumnHeader Tag="IsSited">Sited</GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Order" DisplayMemberBinding="{Binding LoadOrder, Mode=OneWay}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name, Mode=OneTime}" />
+                    <GridViewColumn Header="Guid" DisplayMemberBinding="{Binding Guid, Mode=OneTime}" />
+                    <GridViewColumn Header="Product" DisplayMemberBinding="{Binding Product, Mode=OneTime}" />
+                    <GridViewColumn Header="Company" DisplayMemberBinding="{Binding Company, Mode=OneTime}" />
+                    <GridViewColumn Header="InprocServer" DisplayMemberBinding="{Binding InprocServer, Mode=OneTime}" />
+                    <GridViewColumn Header="CodeBase" DisplayMemberBinding="{Binding CodeBase, Mode=OneTime}" />
+                    <GridViewColumn Header="Assembly" DisplayMemberBinding="{Binding Assembly, Mode=OneTime}" />
+                    <GridViewColumn Header="Class" DisplayMemberBinding="{Binding Class, Mode=OneTime}" />
+                </GridView>
+            </ListView.View>
+        </local:SortableListView>
+    </DockPanel>
+    <GridSplitter Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="4" />
+</Grid>

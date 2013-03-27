@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}</ProjectGuid>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.VisualStudio.ComponentDiagnostics</RootNamespace>
+    <AssemblyName>ComponentDiagnostics</AssemblyName>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>Paul.Harrington.pfx</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime">
+      <HintPath>.\Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime">
+      <HintPath>.\Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0">
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.11.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CustomTypeProviderAdapter.cs" />
+    <Compile Include="DefaultProviderView.xaml.cs">
+      <DependentUpon>DefaultProviderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DiagnosticsColors.cs" />
+    <Compile Include="ErrorDataSource.cs" />
+    <Compile Include="ExceptionView.xaml.cs">
+      <DependentUpon>ExceptionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileChangeServiceView.xaml.cs">
+      <DependentUpon>FileChangeServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GelTreeViewDataTypes.cs" />
+    <Compile Include="GuidList.cs" />
+    <Compile Include="KilobytesConverter.cs" />
+    <Compile Include="LoadReasonConverter.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="NavigationHistoryView.xaml.cs">
+      <DependentUpon>NavigationHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NavItemToFontWeightConverter.cs" />
+    <Compile Include="OleComponentStatusIndicator.xaml.cs">
+      <DependentUpon>OleComponentStatusIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OleComponentView.xaml.cs">
+      <DependentUpon>OleComponentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Package.cs" />
+    <Compile Include="PackageManagerView.xaml.cs">
+      <DependentUpon>PackageManagerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PkgCmdID.cs" />
+    <Compile Include="Provider.cs" />
+    <Compile Include="ProviderDataSourceWrapper.cs" />
+    <Compile Include="ProviderRegistration.cs" />
+    <Compile Include="RDT\RdtDiagnosticsDataSource.cs" />
+    <Compile Include="RDT\RdtDiagnosticsProvider.cs" />
+    <Compile Include="RDT\RdtEntry.cs" />
+    <Compile Include="RDT\RdtEnumCollators.cs" />
+    <Compile Include="RDT\RdtEvent.cs" />
+    <Compile Include="RDT\RdtEventSink.cs" />
+    <Compile Include="RDT\RdtView.xaml.cs">
+      <DependentUpon>RdtView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RegisteredProvider.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceDataModel.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SortableListView.xaml.cs">
+      <DependentUpon>SortableListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatusIndicatorHost.cs" />
+    <Compile Include="StringLengthConverter.cs" />
+    <Compile Include="TaskContextConverter.cs" />
+    <Compile Include="TaskSchedulerServiceView.xaml.cs">
+      <DependentUpon>TaskSchedulerServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThemedScrollbars\NativeWindowInfo.cs" />
+    <Compile Include="ThemedScrollbars\ScrollbarDiagnosticsDataSource.cs" />
+    <Compile Include="ThemedScrollbars\ScrollbarDiagnosticsProvider.cs" />
+    <Compile Include="ThemedScrollbars\ScrollbarView.xaml.cs">
+      <DependentUpon>ScrollbarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindow.cs" />
+    <Compile Include="UIContext\SelectionData.cs" />
+    <Compile Include="UIContext\SelectionItemInfo.cs" />
+    <Compile Include="UIContext\SelectionLogItem.cs" />
+    <Compile Include="UIContext\UIContextInformation.cs" />
+    <Compile Include="UIContext\UIContextLogItem.cs" />
+    <Compile Include="UIContext\UIContextView.xaml.cs">
+      <DependentUpon>UIContextView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIElementIds.cs" />
+    <Compile Include="UIFactory.cs" />
+    <Compile Include="UtcToLocalTimeConverter.cs" />
+    <Compile Include="View.xaml.cs">
+      <DependentUpon>View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewCreationException.cs" />
+    <Compile Include="ViewHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="PkgCmd.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
+    </VSCTCompile>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Paul.Harrington.pfx" />
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DiagnosticsColors.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="VsixIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="VsixScreenshot.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="Resources\Toolwindow.png" />
+    <Content Include="Resources\Commands.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Package.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DefaultProviderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExceptionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileChangeServiceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NavigationHistoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OleComponentStatusIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OleComponentView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PackageManagerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RDT\RdtView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SortableListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TaskSchedulerServiceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ThemedScrollbars\ScrollbarView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UIContext\UIContextView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
