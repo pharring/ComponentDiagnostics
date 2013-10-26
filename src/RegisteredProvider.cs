@@ -9,7 +9,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         static readonly GelProperty ModelProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(Provider.ModelProp, VsUIType.Unknown, __VSUIDATAFORMAT.VSDF_BUILTIN, GetModel);
         static readonly GelProperty VersionProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(Provider.VersionProp, VsUIType.DWord, __VSUIDATAFORMAT.VSDF_BUILTIN, GetVersion);
 
-        IVsDiagnosticsProvider diagnosticsProvider;
+        private IVsDiagnosticsProvider lazyDiagnosticsProvider;
 
         public RegisteredProvider(ProviderRegistration registration)
             : base(registration.guid, registration.name, registration.package, registration.viewDescriptor)
@@ -26,8 +26,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
-                EnsureDiagnosticsProvider();
-                return this.diagnosticsProvider.DataModel;
+                return DiagnosticsProvider.DataModel;
             }
         }
 
@@ -41,16 +40,15 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
-                EnsureDiagnosticsProvider();
-                return this.diagnosticsProvider.Version;
+                return DiagnosticsProvider.Version;
             }
         }
 
-        private void EnsureDiagnosticsProvider()
+        private IVsDiagnosticsProvider DiagnosticsProvider
         {
-            if (this.diagnosticsProvider == null)
+            get
             {
-                this.diagnosticsProvider = VsShellUtilities.GetPackageExtensionPoint<IVsDiagnosticsProvider, IVsDiagnosticsProvider>(base.Package, base.ProviderGuid);
+                return this.lazyDiagnosticsProvider ?? (this.lazyDiagnosticsProvider = VsShellUtilities.GetPackageExtensionPoint<IVsDiagnosticsProvider, IVsDiagnosticsProvider>(base.Package, base.ProviderGuid));
             }
         }
     }
