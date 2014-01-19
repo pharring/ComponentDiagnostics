@@ -422,6 +422,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     using (RegistryKey languageService = languagesKey.OpenSubKey(keyName))
                     {
                         string contextGuidString = (string)languageService.GetValue(null);
+                        if (string.IsNullOrEmpty(contextGuidString)) continue;
+
                         string name = keyName;
                         string packageGuidString = String.Empty;
 
