@@ -26,6 +26,31 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         uint selectionEventsCookie = VSConstants.VSCOOKIE_NIL;
 
+        private static bool IsRunningOnDev12 = InitializeIsRunningOnDev12();
+
+        private static bool InitializeIsRunningOnDev12()
+        {
+            // Do a QueryService for IVsShell6 which was introduced in Dev12
+            object shellService = ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
+            IntPtr punk = Marshal.GetIUnknownForObject(shellService);
+            try
+            {
+                Guid IID_IVsShell6 = new Guid("D111DB4B-584E-4F93-BCEC-5F7E0990E9E7");
+                IntPtr punkShell6;
+                if (Marshal.QueryInterface(punk, ref IID_IVsShell6, out punkShell6) == VSConstants.S_OK)
+                {
+                    Marshal.Release(punkShell6);
+                    return true;
+                }
+            }
+            finally
+            {
+                Marshal.Release(punk);
+            }
+
+            return false;
+        }
+
 
         private ObservableCollection<UIContextInformation> liveContexts = new ObservableCollection<UIContextInformation>();
         public ObservableCollection<UIContextInformation> LiveContexts { get { return liveContexts; } }
@@ -291,9 +316,18 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
-            IVsMonitorSelectionExPrivate selectionMonitorPrivate = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelectionExPrivate;
             IVsTrackSelectionEx selCtx;
-            selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+
+            if (IsRunningOnDev12)
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+            }
+            else
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+            }
 
             if (selCtx != null)
                 return GetContextOwner(selCtx);
@@ -306,10 +340,20 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
-            IVsMonitorSelectionExPrivate selectionMonitorPrivate = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelectionExPrivate;
+
             IVsTrackSelectionEx hierarchySelCtx;
             IVsTrackSelectionEx selectionContainerCtx;
-            selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+
+            if (IsRunningOnDev12)
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+            }
+            else
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+            }
 
             if (hierarchySelCtx != null)
                 return GetContextOwner(hierarchySelCtx);
@@ -322,10 +366,19 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
-            IVsMonitorSelectionExPrivate selectionMonitorPrivate = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelectionExPrivate;
             IVsTrackSelectionEx hierarchySelCtx;
             IVsTrackSelectionEx selectionContainerCtx;
-            selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+
+            if (IsRunningOnDev12)
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+            }
+            else
+            {
+                var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+            }
 
             if (selectionContainerCtx != null)
                 return GetContextOwner(selectionContainerCtx);
@@ -549,6 +602,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             AddContextName(VSConstants.UICONTEXT.SettingsDesigner_string, "Settings Designer");
             AddContextName(VSConstants.UICONTEXT.PropertyPageDesigner_string, "Property Page Designer");
             AddContextName(VSConstants.UICONTEXT.BackgroundProjectLoad_string, "Background Project Load");
+            AddContextName(VSConstants.UICONTEXT.OsWindows8OrHigher_string, "OS Windows 8.0 or Higher");
+            AddContextName(/*VSConstants.UICONTEXT.IdeUserSignedIn_string*/ "{67CFF80C-0863-4202-A4E4-CE80FDF8506E}", "IDE User Signed In");
+            AddContextName(/*UICONTEXT_SynchronousSolutionOperation*/ "{30315F71-BB05-436B-8CC1-6A62B368C842}", "Synchronous Solution Operation");
         }
 
         /// <summary>

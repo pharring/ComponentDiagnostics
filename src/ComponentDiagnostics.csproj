@@ -44,10 +44,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime">
-      <HintPath>.\Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime">
       <HintPath>.\Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -146,6 +142,7 @@
       <DependentUpon>ScrollbarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ToolWindow.cs" />
+    <Compile Include="UIContext\IVsMonitorSelectionExPrivate.Dev12.cs" />
     <Compile Include="UIContext\SelectionData.cs" />
     <Compile Include="UIContext\SelectionItemInfo.cs" />
     <Compile Include="UIContext\SelectionLogItem.cs" />
@@ -183,6 +180,7 @@
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="UIContext\IVsMonitorSelectionExPrivate.Dev11.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DiagnosticsColors.pkgdef">
