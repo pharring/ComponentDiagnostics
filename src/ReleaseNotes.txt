@@ -1,9 +1,5 @@
-﻿Component Diagnostics: http://visualstudiogallery.msdn.microsoft.com/b27b3a77-9c70-4130-820c-bfaa7a4e05bc
-
-Release Notes:
+﻿Release Notes for Component Diagnostics http://visualstudiogallery.msdn.microsoft.com/b27b3a77-9c70-4130-820c-bfaa7a4e05bc
 
 1.12.30416.1 Added support for VS 2013 lazy tabs on the RDT viewer.
-
 1.12.30331.2 Fix incorrect data in selection and UI context tab when running on VS 2013
-
 1.12.30118.1 Fix broken tabs for VS 2013: Selection and UI context, Task Scheduler
