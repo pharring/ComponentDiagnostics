@@ -56,6 +56,9 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0">
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0.dll">
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.11.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
@@ -116,6 +119,8 @@
     <Compile Include="RDT\RdtView.xaml.cs">
       <DependentUpon>RdtView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RDT\RunningDocumentInfo.cs" />
+    <Compile Include="RDT\RunningDocumentTable.cs" />
     <Compile Include="RegisteredProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -184,6 +189,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DiagnosticsColors.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="ReleaseNotes.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="VsixIcon.png">

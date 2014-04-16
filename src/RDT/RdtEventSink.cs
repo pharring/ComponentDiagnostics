@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 using VSCOOKIE = System.UInt32;
@@ -98,7 +97,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 RunningDocumentTable rdt = new RunningDocumentTable();
                 RunningDocumentInfo info = rdt.GetDocumentInfo (cookie);
-                entry = new RdtEntry (info);
+
+                entry = new RdtEntry(info);
                 _ds.Entries.Add(entry);
             }
 

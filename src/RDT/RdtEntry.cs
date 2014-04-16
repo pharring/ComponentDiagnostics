@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 using VSCOOKIE = System.UInt32;
 
@@ -13,13 +13,37 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     {
         public static event EventHandler OnFinalUnlock;
 
-        public RdtEntry (RunningDocumentInfo info)
+        public RdtEntry(RunningDocumentInfo info)
         {
-            Cookie    = info.DocCookie;
-            Moniker   = info.Moniker;
+            Cookie = info.DocCookie;
+            Moniker = info.Moniker;
             ReadLocks = info.ReadLocks;
             EditLocks = info.EditLocks;
-            Flags     = (RdtFlags)(int) info.Flags;
+            Flags = (RdtFlags)(int)info.Flags;
+
+            if (info.IsDocumentInitialized)
+            {
+                IVsPersistDocData persist = info.DocData as IVsPersistDocData;
+                if (persist != null)
+                {
+                    int isDirty;
+                    persist.IsDocDataDirty(out isDirty);
+                    IsDirty = Convert.ToBoolean(isDirty);
+                }
+
+                IVsPersistDocData2 persist2 = info.DocData as IVsPersistDocData2;
+                if (persist2 != null)
+                {
+                    int isReadOnly;
+                    persist2.IsDocDataReadOnly(out isReadOnly);
+                    IsReadOnly = Convert.ToBoolean(isReadOnly);
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return String.Format("cookie={0}, {1}", Cookie, Moniker);
         }
 
         #region Dependency properties
