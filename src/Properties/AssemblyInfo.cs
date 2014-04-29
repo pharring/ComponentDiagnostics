@@ -30,8 +30,8 @@ using System.Runtime.Versioning;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.12.30416.1")]
-[assembly: AssemblyFileVersion("1.12.30416.1")]
+[assembly: AssemblyVersion("1.12.30429.0")]
+[assembly: AssemblyFileVersion("1.12.30429.0")]
 
 // Declare the component guarantees. This is an assembly with internal API, that is not intended for public use.
 [assembly: ComponentGuarantees(ComponentGuaranteesOptions.None)]

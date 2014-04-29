@@ -26,7 +26,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         uint selectionEventsCookie = VSConstants.VSCOOKIE_NIL;
 
-        private static bool IsRunningOnDev12 = InitializeIsRunningOnDev12();
+        private static readonly bool IsRunningOnDev12 = InitializeIsRunningOnDev12();
 
         private static bool InitializeIsRunningOnDev12()
         {
@@ -316,17 +316,23 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
-            IVsTrackSelectionEx selCtx;
+            IVsTrackSelectionEx selCtx = null;
 
             if (IsRunningOnDev12)
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+                }
             }
             else
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfElement((uint)selElem, out selCtx);
+                }
             }
 
             if (selCtx != null)
@@ -341,18 +347,24 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
 
-            IVsTrackSelectionEx hierarchySelCtx;
+            IVsTrackSelectionEx hierarchySelCtx = null;
             IVsTrackSelectionEx selectionContainerCtx;
 
             if (IsRunningOnDev12)
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                }
             }
             else
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                }
             }
 
             if (hierarchySelCtx != null)
@@ -456,6 +468,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 AddRegisteredGuids(rootKey, "DataProviders", null);
                 AddRegisteredGuids(rootKey, "DataSources", null);
                 AddRegisteredGuids(rootKey, "Projects", null);
+                AddRegisteredGuids(rootKey, "UIContextRules", null);
 
                 // need package resource lookup?
                 AddRegisteredGuids(rootKey, "KeyBindingTables", null);
