@@ -175,8 +175,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         void AddContextName(string contextGuidString, string contextName, string packageGuidString)
         {
             uint guidCookie = 0;
-            Guid contextGuid = new Guid(contextGuidString);
-            if (ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out guidCookie)))
+            Guid contextGuid;
+            if (Guid.TryParse(contextGuidString, out contextGuid) && ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out guidCookie)))
             {
                 UIContextInformation info = null;
                 contextIDNames.TryGetValue(guidCookie, out info);
@@ -379,17 +379,23 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
             IVsTrackSelectionEx hierarchySelCtx;
-            IVsTrackSelectionEx selectionContainerCtx;
+            IVsTrackSelectionEx selectionContainerCtx = null;
 
             if (IsRunningOnDev12)
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                }
             }
             else
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-                selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                if (selectionMonitorPrivate != null)
+                {
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                }
             }
 
             if (selectionContainerCtx != null)
