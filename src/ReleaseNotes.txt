@@ -1,5 +1,6 @@
 ﻿Release Notes for Component Diagnostics http://visualstudiogallery.msdn.microsoft.com/b27b3a77-9c70-4130-820c-bfaa7a4e05bc
 
+1.12.50123.0 Updated manifest to support .Net 4.6 on VS 2015 CTP 5. Updated license copyright to 2015.
 1.12.30502.0 Reduced exception noise for malformed GUIDs.
 1.12.30429.0 Fixed crash on shutdown with selection and UI context tab. Add support for UIContextRules.
 1.12.30416.1 Added support for VS 2013 lazy tabs on the RDT viewer.
