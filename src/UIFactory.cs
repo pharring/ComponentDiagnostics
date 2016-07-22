@@ -34,6 +34,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 new WpfUIFactoryElement(GuidList.UiFactory, UIElementIds.RdtView,                 typeof(RdtView)),
                 new WpfUIFactoryElement(GuidList.UiFactory, UIElementIds.UIContextView,           typeof(UIContextView)),
                 new WpfUIFactoryElement(GuidList.UiFactory, UIElementIds.ScrollbarView,           typeof(ScrollbarView)),
+                new WpfUIFactoryElement(GuidList.UiFactory, UIElementIds.PackageCostView,         typeof(PackageCostTrackerView))
             };
         }
     }

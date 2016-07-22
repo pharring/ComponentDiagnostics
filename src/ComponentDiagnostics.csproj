@@ -103,6 +103,9 @@
       <DependentUpon>OleComponentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Package.cs" />
+    <Compile Include="PackageCostTrackerView.xaml.cs">
+      <DependentUpon>PackageCostTrackerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageManagerView.xaml.cs">
       <DependentUpon>PackageManagerView.xaml</DependentUpon>
     </Compile>
@@ -236,6 +239,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="OleComponentView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PackageCostTrackerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
