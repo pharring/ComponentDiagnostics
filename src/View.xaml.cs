@@ -51,6 +51,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
                 VsUIElementDescriptor newViewDescriptor = GetAppropriateViewDescriptor(providerModel);
 
+                Telemetry.Client.TrackPageView(providerModel.Name);
+
                 // Decide if the view should change, or if we can just update the datasource on the existing view.
                 if (ShouldChangeView(newViewDescriptor))
                 {
@@ -107,6 +109,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void HandleViewCreationException(ContentControl contentHost, Exception ex)
         {
+            Telemetry.Client.TrackException(ex);
             this.currentViewElement = null;
             contentHost.Content = ViewHelper.CreateErrorMessageView(ex.Message);
         }

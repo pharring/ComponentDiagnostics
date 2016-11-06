@@ -45,5 +45,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 return GetValue(Provider.ModelProp);
             }
         }
+
+        public string Name
+        {
+            get
+            {
+                return GetValue<string>(Provider.NameProp);
+            }
+        }
     }
 }

@@ -43,6 +43,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>packages\Microsoft.ApplicationInsights.2.1.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime">
       <HintPath>.\Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime.dll</HintPath>
@@ -143,6 +146,7 @@
     <Compile Include="TaskSchedulerServiceView.xaml.cs">
       <DependentUpon>TaskSchedulerServiceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Telemetry.cs" />
     <Compile Include="ThemedScrollbars\NativeWindowInfo.cs" />
     <Compile Include="ThemedScrollbars\ScrollbarDiagnosticsDataSource.cs" />
     <Compile Include="ThemedScrollbars\ScrollbarDiagnosticsProvider.cs" />
@@ -184,6 +188,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Paul.Harrington.pfx" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>

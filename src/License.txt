@@ -1,2 +1,3 @@
 ﻿© 2016 Paul Harrington
 This software is licensed "as-is" for diagnostic purposes only.
+This extension sends anonymized usage statistics via Application Insights to the extension author for product improvement purposes.

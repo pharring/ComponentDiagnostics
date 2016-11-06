@@ -28,6 +28,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
             catch (UIFactoryException ex)
             {
+                Telemetry.Client.TrackException(ex);
                 return CreateErrorMessageView(ex.Message);
             }
         }

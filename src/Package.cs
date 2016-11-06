@@ -29,8 +29,24 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             _instance = this;
             base.Initialize();
+            Telemetry.Client.TrackEvent("Package.Initialize", Telemetry.CreateProperties("VSVersion", GetVSVersion()));
             UIFactory.CreateAndRegister(this);
             AddCommandHandlers();
+        }
+
+        private string GetVSVersion()
+        {
+            var shell = GetService(typeof(SVsShell)) as IVsShell;
+            if (shell != null)
+            {
+                object obj;
+                if (ErrorHandler.Succeeded(shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out obj)) && obj != null)
+                {
+                    return obj.ToString();
+                }
+            }
+
+            return "Unknown";
         }
 
         void AddCommandHandlers()
@@ -50,6 +66,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void ShowToolWindow(object sender, EventArgs e)
         {
+            Telemetry.Client.TrackEvent("ShowToolWindow");
+
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
