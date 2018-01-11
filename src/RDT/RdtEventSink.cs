@@ -46,23 +46,28 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public int OnAfterAttributeChange(VSCOOKIE cookie, uint grfAttribs)
         {
-            HandleOnAfterAttributeChange(cookie, grfAttribs, "OnAfterAttributeChange");
+            HandleOnAfterAttributeChange(cookie, grfAttribs, oldName: null, newName: null, eventName: "OnAfterAttributeChange");
             return VSConstants.S_OK;
         }
 
         public int OnAfterAttributeChangeEx(VSCOOKIE cookie, uint grfAttribs, IVsHierarchy pHierOld, uint itemidOld, string pszMkDocumentOld, IVsHierarchy pHierNew, uint itemidNew, string pszMkDocumentNew)
         {
-            HandleOnAfterAttributeChange(cookie, grfAttribs, "OnAfterAttributeChangeEx");
+            HandleOnAfterAttributeChange(cookie, grfAttribs, pszMkDocumentOld, pszMkDocumentNew, "OnAfterAttributeChangeEx");
             return VSConstants.S_OK;
         }
 
-        void HandleOnAfterAttributeChange (VSCOOKIE cookie, uint grfAttribs, string eventName)
+        void HandleOnAfterAttributeChange(VSCOOKIE cookie, uint grfAttribs, string oldName, string newName, string eventName)
         {
             RdtAttributes attrs = (RdtAttributes) (int) grfAttribs;
-            RdtEvent evt = MakeEvent(cookie, "{0}: attributes = {1}", eventName, attrs);
+
+            string eventText = $"{eventName}: attributes={attrs}";
+            if (attrs.HasFlag(RdtAttributes.RDTA_MkDocument))
+                eventText += $", old={oldName}, new={newName}";
+
+            RdtEvent evt = MakeEvent(cookie, eventText);
             _ds.RecordEvent(evt);
 
-            RdtEntry entry = _ds.FindEntry (cookie);
+            RdtEntry entry = _ds.FindEntry(cookie);
             if (entry == null)
                 return;
 
@@ -75,6 +80,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 entry.IsReadOnly = true;
             else if (attrs.HasFlag(RdtAttributes.RDTA_DocDataIsNotReadOnly))
                 entry.IsReadOnly = false;
+
+            if (attrs.HasFlag(RdtAttributes.RDTA_MkDocument))
+                entry.Moniker = newName;
         }
 
         public int OnAfterDocumentWindowHide(VSCOOKIE cookie, IVsWindowFrame pFrame)
