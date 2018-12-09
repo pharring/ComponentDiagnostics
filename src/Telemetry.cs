@@ -31,11 +31,18 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             var client = new TelemetryClient(configuration);
             client.Context.User.Id = Anonymize(Environment.UserDomainName + "\\" + Environment.UserName);
-            client.Context.Session.Id = Guid.NewGuid().ToString();
+            client.Context.Session.Id = Convert.ToBase64String(GetRandomBytes(length: 6));
             client.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             client.Context.Component.Version = typeof(Telemetry).Assembly.GetName().Version.ToString();
 
             return client;
+        }
+
+        private static byte[] GetRandomBytes(int length)
+        {
+            var buff = new byte[length];
+            RandomNumberGenerator.Create().GetBytes(buff);
+            return buff;
         }
 
         private static string Anonymize(string str)
@@ -44,7 +51,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 byte[] inputBytes = Encoding.Unicode.GetBytes(str);
                 byte[] hash = sha1.ComputeHash(inputBytes);
-                string base64 = Convert.ToBase64String(hash);
+                string base64 = Convert.ToBase64String(hash, 0, 6);
                 return base64;
             }
         }
