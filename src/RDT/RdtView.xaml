@@ -56,6 +56,8 @@
                 <GridViewColumn Header="Dirty?"     CellTemplate="{StaticResource IsDirtyCellTemplate}" />
                 <GridViewColumn Header="R/O?"       CellTemplate="{StaticResource IsReadOnlyCellTemplate}" />
                 <GridViewColumn Header="Flags"      DisplayMemberBinding="{Binding Flags}" />
+                <GridViewColumn Header="ProjectId"  DisplayMemberBinding="{Binding ProjectId}" />
+                <GridViewColumn Header="DocData ClassId"    DisplayMemberBinding="{Binding ClassId}" />
               </GridView>
             </ListView.View>
           </local:SortableListView>

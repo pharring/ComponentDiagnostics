@@ -12,6 +12,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         : IVsRunningDocTableEvents3
         , IVsRunningDocTableEvents4
         , IVsRunningDocTableEvents5
+        , IVsRunningDocTableEvents6
     {
         readonly RdtDiagnosticsDataSource _ds;
         VSCOOKIE _cookie;
@@ -193,6 +194,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             else if (flags.HasFlag (RdtFlags.RDT_EditLock))
                 entry.EditLocks = newCount;
+        }
+
+        #endregion
+
+        #region IVsRunningDocTableEvents6 Members
+
+        public void OnAfterDocDataChanged(uint cookie, System.IntPtr punkDocDataOld, System.IntPtr punkDocDataNew)
+        {
+            RdtEvent evt = MakeEvent(cookie, "OnAfterDocDataChanged: DocDataOld={0}, DocDataNew={1}", punkDocDataOld, punkDocDataNew);
+            _ds.RecordEvent(evt);
         }
 
         #endregion

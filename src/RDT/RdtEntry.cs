@@ -20,6 +20,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             ReadLocks = info.ReadLocks;
             EditLocks = info.EditLocks;
             Flags = (RdtFlags)(int)info.Flags;
+            ProjectId = info.ProjectGuid;
 
             if (info.IsDocumentInitialized)
             {
@@ -29,6 +30,12 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     int isDirty;
                     persist.IsDocDataDirty(out isDirty);
                     IsDirty = Convert.ToBoolean(isDirty);
+
+                    int hr = persist.GetGuidEditorType(out Guid editorType);
+                    if (ErrorHandler.Succeeded(hr))
+                    {
+                        ClassId = editorType;
+                    }
                 }
 
                 IVsPersistDocData2 persist2 = info.DocData as IVsPersistDocData2;
@@ -159,6 +166,38 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         }
 
         #endregion IsReadOnly
+
+        #region ProjectId
+
+        public static readonly DependencyProperty ProjectIdProperty =
+            DependencyProperty.Register("ProjectId",
+                                        typeof(Guid),
+                                        typeof(RdtEntry),
+                                        new UIPropertyMetadata(null));
+
+        public Guid ProjectId
+        {
+            get { return (Guid)GetValue(ProjectIdProperty); }
+            set { SetValue(ProjectIdProperty, value); }
+        }
+
+        #endregion ProjectId
+
+        #region ClassId
+
+        public static readonly DependencyProperty ClassIdProperty =
+            DependencyProperty.Register("ClassId",
+                                        typeof(Guid),
+                                        typeof(RdtEntry),
+                                        new UIPropertyMetadata(null));
+
+        public Guid ClassId
+        {
+            get { return (Guid)GetValue(ClassIdProperty); }
+            set { SetValue(ClassIdProperty, value); }
+        }
+
+        #endregion ClassId
 
         #endregion Dependency properties
 
