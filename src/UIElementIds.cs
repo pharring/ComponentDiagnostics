@@ -60,10 +60,14 @@
         /// </summary>
         public const uint ScrollbarView = 11u;
 
-        
         /// <summary>
         /// A view for package cost monitoring service
         /// </summary>
         public const uint PackageCostView = 12u;
+
+        /// <summary>
+        /// A view for window frames
+        /// </summary>
+        public const uint WindowFramesView = 13u;
     }
 }

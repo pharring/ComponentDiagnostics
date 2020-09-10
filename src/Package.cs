@@ -17,6 +17,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     [ProvideComponentDiagnostics(typeof(RdtDiagnosticsProvider), "Running Document Table", GuidList.UiFactoryString, UIElementIds.RdtView)]
     [ProvideComponentDiagnostics(typeof(UIContextDiagnosticsProvider), "Selection and UIContext", GuidList.UiFactoryString, UIElementIds.UIContextView)]
     [ProvideComponentDiagnostics(typeof(ScrollbarDiagnosticsProvider), "Scrollbar Theming", GuidList.UiFactoryString, UIElementIds.ScrollbarView)]
+    [ProvideComponentDiagnostics(typeof(WindowFramesDiagnosticsProvider), "Window Frames", GuidList.UiFactoryString, UIElementIds.WindowFramesView)]
     public sealed class Package : Microsoft.VisualStudio.Shell.ExtensionPointPackage
     {
         static Package _instance;

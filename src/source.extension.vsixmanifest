@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="7f3371e3-c5e2-4323-bf6b-43b899ef434b" Version="1.20.0813.0" Language="en-US" Publisher="Paul Harrington" />
+        <Identity Id="7f3371e3-c5e2-4323-bf6b-43b899ef434b" Version="1.20.0819.0" Language="en-US" Publisher="Paul Harrington" />
         <DisplayName>Component Diagnostics</DisplayName>
         <Description xml:space="preserve">Advanced real-time diagnostics from various sub-systems within Visual Studio. Access the toolwindow from the Help menu.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics</MoreInfo>
