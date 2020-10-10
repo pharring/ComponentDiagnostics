@@ -41,7 +41,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         private static byte[] GetRandomBytes(int length)
         {
             var buff = new byte[length];
-            RandomNumberGenerator.Create().GetBytes(buff);
+            var rnd = RandomNumberGenerator.Create();
+            rnd.GetBytes(buff);
             return buff;
         }
 
