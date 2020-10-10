@@ -13,6 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "marketplace", "marketplace", "{0D572063-5EBB-49C6-A248-6FAD0F651423}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{90291F41-8D7B-4EB7-BC3F-FF857F382886}"
+	ProjectSection(SolutionItems) = preProject
+		..\marketplace\images\Screenshot_Toolwindow.png = ..\marketplace\images\Screenshot_Toolwindow.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +33,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90291F41-8D7B-4EB7-BC3F-FF857F382886} = {0D572063-5EBB-49C6-A248-6FAD0F651423}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70D2DBAD-69F6-4687-9368-DC5BA6B5CF45}
