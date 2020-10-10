@@ -37,10 +37,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // which throws an exception if it happens to be selected when the Component Diagnostics
             // tool window is first shown. Showing the tool window changes an invariant in the diagnostics
             // document tab well's diagnostics provider.
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs (we want application idle)
             this.Dispatcher.BeginInvoke(
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread (we're using Dispatcher.BeginInvoke)
                 new Action(() => SelectNewViewPresenter(e.NewValue as IVsUIDataSource, (ContentControl)sender)),
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
                 DispatcherPriority.ApplicationIdle
                 );
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
         }
 
         private void SelectNewViewPresenter(IVsUIDataSource dataContext, ContentControl contentHost)

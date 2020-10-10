@@ -638,7 +638,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             AddContextName(VSConstants.UICONTEXT.RESXEditor_string, "RESX Editor");
             AddContextName(VSConstants.UICONTEXT.SettingsDesigner_string, "Settings Designer");
             AddContextName(VSConstants.UICONTEXT.PropertyPageDesigner_string, "Property Page Designer");
+#pragma warning disable CS0618 // Type or member is obsolete
             AddContextName(VSConstants.UICONTEXT.BackgroundProjectLoad_string, "Background Project Load");
+#pragma warning restore CS0618 // Type or member is obsolete
             AddContextName(VSConstants.UICONTEXT.OsWindows8OrHigher_string, "OS Windows 8.0 or Higher");
             AddContextName(/*VSConstants.UICONTEXT.IdeUserSignedIn_string*/ "{67CFF80C-0863-4202-A4E4-CE80FDF8506E}", "IDE User Signed In");
             AddContextName(/*UICONTEXT_SynchronousSolutionOperation*/ "{30315F71-BB05-436B-8CC1-6A62B368C842}", "Synchronous Solution Operation");
