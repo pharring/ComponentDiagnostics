@@ -191,10 +191,6 @@
     <Content Include="DiagnosticsColors.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="ReleaseNotes.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="VsixIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

@@ -7,7 +7,7 @@
         <Description xml:space="preserve">Advanced real-time diagnostics from various sub-systems within Visual Studio. Access the toolwindow from the Help menu.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics</MoreInfo>
         <License>LICENSE</License>
-        <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
+        <ReleaseNotes>https://github.com/pharring/ComponentDiagnostics/blob/main/CHANGELOG.md</ReleaseNotes>
         <Icon>VsixIcon.png</Icon>
         <PreviewImage>VsixScreenshot.PNG</PreviewImage>
         <Tags>Diagnostics</Tags>
