@@ -11,6 +11,8 @@ A Visual Studio Extension to explore internal real-time diagnostics from the run
 
 Once installed, select the "Component Diagnostics" command from the "Help" menu to bring up the diagnostics tool window.
 
+![ComponentDiagnosticsToolWindowScreenshot](marketplace/images/Screenshot_Toolwindow.png)
+
 The Component Diagnostics tool window is divided into two panes. In the left hand pane is a list of all the registered diagnostics providers. New providers may be added in the future and other (non-Microsoft) extensions are free to add their own diagnostics providers to this list. The right hand pane shows the diagnostic information from the selected provider. Some views are just a property grid or a tree view over a simple data model. This is the minimal, default view for a diagnostic provider. Other providers include more advanced viewers to better visualize the internal workings of the selected component.
 
 Diagnostics providers are implemented on several of Visual Studio's key services and the Component Diagnostics tool window gives you access to those providers.
