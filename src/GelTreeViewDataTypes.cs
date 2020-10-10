@@ -21,6 +21,8 @@ namespace GelTreeViewDataTypes
         /// <returns>The newly created treeview node</returns>
         public static object CreateAppropriateNode(string gelType, object value)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             switch (gelType)
             {
                 case VsUIType.DataSource:
@@ -46,14 +48,14 @@ namespace GelTreeViewDataTypes
         /// <returns>The appropriate treeview node or null if it's not a Gel object</returns>
         public static object CreateAppropriateRootNode(object value)
         {
-            IVsUIDataSource ds = value as IVsUIDataSource;
-            if (ds != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (value is IVsUIDataSource ds)
             {
                 return new DataSourceNode(ds);
             }
 
-            IVsUICollection coll = value as IVsUICollection;
-            if (coll != null)
+            if (value is IVsUICollection coll)
             {
                 return new CollectionNode(coll);
             }
@@ -94,6 +96,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (verbs == null)
                 {
                     IVsUIEnumDataSourceVerbs enumVerbs;
@@ -111,6 +114,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.Verbs.Count;
             }
         }
@@ -150,6 +154,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 object node = Utilities.CreateAppropriateNode(this.Type, this.Value);
                 if(node!=null)
                 {
@@ -177,10 +182,11 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (properties == null)
                 {
-                    IVsUIEnumDataSourceProperties enumProperties;
-                    Marshal.ThrowExceptionForHR(this.ds.EnumProperties(out enumProperties));
+                    Marshal.ThrowExceptionForHR(this.ds.EnumProperties(out IVsUIEnumDataSourceProperties enumProperties));
                     properties = new List<Property>();
                     foreach (VsUIPropertyDescriptor desc in ComUtilities.EnumerableFrom(enumProperties))
                     {
@@ -202,6 +208,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.Properties.Count;
             }
         }
@@ -220,9 +227,8 @@ namespace GelTreeViewDataTypes
 
         public Shape(IVsUIDataSource ds)
         {
-            Guid guid;
-            uint dword;
-            Marshal.ThrowExceptionForHR(ds.GetShapeIdentifier(out guid, out dword));
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Marshal.ThrowExceptionForHR(ds.GetShapeIdentifier(out Guid guid, out uint dword));
             this.Guid = guid;
             this.Id = dword;
         }
@@ -242,8 +248,7 @@ namespace GelTreeViewDataTypes
 
         public DataSourceNode(IVsUIDataSource ds)
         {
-            if (ds == null) throw new ArgumentNullException("ds");
-            this.ds = ds;
+            this.ds = ds ?? throw new ArgumentNullException("ds");
         }
 
         [Description("The concrete managed type of the selected data source")]
@@ -264,6 +269,8 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (ds != null)
                 {
                     yield return Shape;
@@ -308,8 +315,7 @@ namespace GelTreeViewDataTypes
         IVsUICollection coll;
         public CollectionItems(IVsUICollection coll)
         {
-            if (coll == null) throw new ArgumentNullException("coll");
-            this.coll = coll;
+            this.coll = coll ?? throw new ArgumentNullException("coll");
         }
 
         [Description("The number of items in the collection.")]
@@ -317,6 +323,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 uint count;
                 this.coll.get_Count(out count);
                 return count;
@@ -327,12 +334,12 @@ namespace GelTreeViewDataTypes
         {
             get
             {
-                uint count;
-                this.coll.get_Count(out count);
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                this.coll.get_Count(out uint count);
                 for (uint i = 0; i != count; ++i)
                 {
-                    IVsUIDataSource item;
-                    this.coll.GetItem(i, out item);
+                    this.coll.GetItem(i, out IVsUIDataSource item);
                     yield return new CollectionItem(i, item);
                 }
             }
@@ -356,6 +363,8 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (Marshal.IsComObject(this.coll))
                 {
                     if (this.coll is IVsUIDynamicCollection)
@@ -374,6 +383,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.coll is IVsUIDynamicCollection;
             }
         }
@@ -383,6 +393,7 @@ namespace GelTreeViewDataTypes
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 VerbList verbs = new VerbList(this.coll);
                 if (verbs.Count != 0)
                 {

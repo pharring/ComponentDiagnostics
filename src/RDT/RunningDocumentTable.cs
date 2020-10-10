@@ -10,6 +10,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public RunningDocumentTable()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _rdt = (IVsRunningDocumentTable)Package.GetGlobalService(typeof(SVsRunningDocumentTable));
         }
 
@@ -23,6 +24,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public IEnumerator<RunningDocumentInfo> GetEnumerator()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (_rdt == null)
                 yield break;
 
@@ -49,6 +51,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         IEnumerator IEnumerable.GetEnumerator()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             return GetEnumerator();
         }
     }

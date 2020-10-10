@@ -50,6 +50,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             if (DataContext is WindowFramesDataSource windowFramesDataSource)
             {
                 _windowFrameEventsSink = new WindowFrameEventsSink(windowFramesDataSource);

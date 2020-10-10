@@ -13,9 +13,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public static void CreateAndRegister(IServiceProvider serviceProvider)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsUIFactory factory = new UIFactory(serviceProvider);
 
             IVsRegisterUIFactories registry = (IVsRegisterUIFactories)serviceProvider.GetService(typeof(SVsUIFactory));
+            Assumes.Present(registry);
+
             ErrorHandler.ThrowOnFailure(registry.RegisterUIFactory(GuidList.UiFactory, factory));
         }
 

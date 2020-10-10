@@ -35,6 +35,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
                 // Create on first access
                 if (base.Content == null)
                 {
@@ -56,6 +58,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns>A view for the toolwindow or error message as appropriate.</returns>
         static FrameworkElement CreateView()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             // CONSIDER: It has been suggested that this data model could be exposed as a
             // DataSource (via a DataSource factory) or even a DiagnosticsProvider itself.
             ServiceDataModel model = ServiceDataModel.CreateInstance();

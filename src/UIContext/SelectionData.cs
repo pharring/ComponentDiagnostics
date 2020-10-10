@@ -30,6 +30,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private static bool InitializeIsRunningOnDev12()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Do a QueryService for IVsShell6 which was introduced in Dev12
             object shellService = ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
             IntPtr punk = Marshal.GetIUnknownForObject(shellService);
@@ -71,6 +72,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         private IVsMonitorSelection selectionMonitor;
         internal SelectionData()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             selectionMonitor = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
 
             InitializeSelectionItems();
@@ -107,6 +109,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <param name="name"></param>
         private void SaveContextIDList(IVsWritableSettingsStore settingsStore, ObservableCollection<UIContextInformation> list, string name)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             string collectionRoot = settingsRoot + "\\" + name;
 
             // rewrite the collection
@@ -128,6 +132,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <param name="name"></param>
         private void LoadContextIDList(IVsSettingsStore settingsStore, ObservableCollection<UIContextInformation> list, string name)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string collectionRoot = settingsRoot + "\\" + name;
 
             int exists;
@@ -169,17 +174,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void AddContextName(string contextGuidString, string contextName)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             AddContextName(contextGuidString, contextName, null);
         }
 
         void AddContextName(string contextGuidString, string contextName, string packageGuidString)
         {
-            uint guidCookie = 0;
-            Guid contextGuid;
-            if (Guid.TryParse(contextGuidString, out contextGuid) && ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out guidCookie)))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (Guid.TryParse(contextGuidString, out Guid contextGuid) && ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out uint guidCookie)))
             {
-                UIContextInformation info = null;
-                contextIDNames.TryGetValue(guidCookie, out info);
+                contextIDNames.TryGetValue(guidCookie, out UIContextInformation info);
                 if (info == null)
                     contextIDNames[guidCookie] = new UIContextInformation(guidCookie, contextName, contextGuid.ToString("B"), packageGuidString);
                 else
@@ -196,13 +200,12 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns></returns>
         RegistryKey GetRegistryRoot()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ILocalRegistry4 localReg = Package.GetGlobalService(typeof(SLocalRegistry)) as ILocalRegistry4;
+            ErrorHandler.ThrowOnFailure(localReg.GetLocalRegistryRootEx((uint)__VsLocalRegistryType.RegType_Configuration, out uint rootHandle, out string rootName));
 
-            string rootName;
-            uint rootHandle;
+
             RegistryKey rootKey;
-            ErrorHandler.ThrowOnFailure(localReg.GetLocalRegistryRootEx((uint)__VsLocalRegistryType.RegType_Configuration, out rootHandle, out rootName));
-
             if ((int)rootHandle == (int)__VsLocalRegistryRootHandle.RegHandle_LocalMachine)
                 rootKey = Registry.LocalMachine.OpenSubKey(rootName);
             else if ((int)rootHandle == (int)__VsLocalRegistryRootHandle.RegHandle_CurrentUser)
@@ -219,6 +222,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void InitializeSelectionItems()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsMonitorSelection selectionMonitor = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
             object elementValue;
             string elementName;
@@ -263,7 +268,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 selectionItems.Add(new SelectionItemInfo(element, GetSelectionElementDescription(elementValue), GetSelectionElementDescription(valueOwner)));
             }
 
-            // Read the VSIP registered seleciton elements
+            // Read the VSIP registered selection elements
 
             // Skip this one, it is not supported yet and will always be empty
             Guid surfaceSelectionElement = new Guid("{64db9e55-5614-44b3-93c9-e617b95eeb5f}");
@@ -301,9 +306,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
         }
 
-
         bool IsEmptySelectionContext(IVsTrackSelectionEx selCtx)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Validate.IsNotNull(selCtx, "selCtx");
             IVsMonitorSelection2 monitorSelection2 = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection2;
             IVsTrackSelectionEx emptySelCtxt;
@@ -313,6 +318,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         object GetOwnerForSelectedElement(VSConstants.SelectionElement selElem)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
@@ -343,6 +349,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         object GetOwnerForSelectedHierarchy()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
@@ -375,6 +383,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         object GetOwnerForSelectedSelectionContainer()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
@@ -411,6 +421,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns></returns>
         object GetContextOwner(IVsTrackSelectionEx selCtx)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (selCtx == null)
                 return null;
 
@@ -459,6 +471,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void InitializeContextDictionary()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             using (RegistryKey rootKey = GetRegistryRoot())
             {
                 AddStockContexts();
@@ -487,6 +500,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <param name="rootKey"></param>
         void AddLanguageServices(RegistryKey rootKey)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             using (RegistryKey languagesKey = rootKey.OpenSubKey("Languages\\Language Services"))
             {
                 foreach (string keyName in languagesKey.GetSubKeyNames())
@@ -530,6 +544,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <param name="nameKey"></param>
         void AddRegisteredGuids(RegistryKey rootKey, string keyList, string nameKey)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             using (RegistryKey listKey = rootKey.OpenSubKey(keyList))
             {
                 if (listKey != null)
@@ -572,6 +588,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void AddStockContexts()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             // Add a few misc guids that are not listed anywhere
             AddContextName("{ 0x874f9ec9, 0x3b99, 0x4d89, { 0xb8, 0xf4, 0x38, 0x25, 0x83, 0xa6, 0xd5, 0x13 } }", "QToolsPackageLoaded");
             AddContextName("{ 0x9dd3bd8f, 0x4dee, 0x4975, { 0x86, 0xeb, 0x17, 0xf2, 0x9d, 0x75, 0xa7, 0x53 } }", "TestUI");
@@ -635,6 +653,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns></returns>
         public int OnCmdUIContextChanged(uint dwCmdUICookie, int fActive)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (contextIDNames.ContainsKey(dwCmdUICookie))
             {
                 UIContextInformation ci = contextIDNames[dwCmdUICookie];
@@ -718,6 +737,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns></returns>
         string GetSelectionElementDescription(object element)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (element == null)
                 return "null";
 
@@ -800,8 +820,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 return string.Format("IVsFindTarget: {0}", caption);
             }
 
-            IVsTrackSelectionEx selCtx = element as IVsTrackSelectionEx;
-            if (selCtx != null)
+            if (element is IVsTrackSelectionEx selCtx)
             {
                 if (IsEmptySelectionContext(selCtx))
                     return "Empty Selection Context";
@@ -827,6 +846,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns></returns>
         public int OnElementValueChanged(uint elementid, object varValueOld, object varValueNew)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             // If window frame, get the tool window caption, name, persistenc slot etc...
             // If document, get its editor, physical view, logical view, interigate object types, impl etc...
 
@@ -886,23 +906,18 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public int OnSelectionChanged(IVsHierarchy pHierOld, uint itemidOld, IVsMultiItemSelect pMISOld, ISelectionContainer pSCOld, IVsHierarchy pHierNew, uint itemidNew, IVsMultiItemSelect pMISNew, ISelectionContainer pSCNew)
         {
-            string newItemDescription = null;
-            string oldItemDescription = null;
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             object hierarchyOwner = GetOwnerForSelectedHierarchy();
             object selectionContainerOwner = GetOwnerForSelectedSelectionContainer();
             string hierarchyOwnerDescription = (hierarchyOwner != null) ? GetSelectionElementDescription(hierarchyOwner) : String.Empty;
             string selectionContainerOwnerDescription = (selectionContainerOwner != null) ? GetSelectionElementDescription(selectionContainerOwner) : String.Empty;
 
-            newItemDescription = GetSelectionElementDescription(pHierNew);
-            oldItemDescription = GetSelectionElementDescription(pHierOld);
-
+            string newItemDescription = GetSelectionElementDescription(pHierNew);
+            string oldItemDescription = GetSelectionElementDescription(pHierOld);
             if (pHierOld != pHierNew)
                 LogSelectionChange((uint)SelectionItemInfo.SpecialElement.Hierarchy, oldItemDescription, newItemDescription, hierarchyOwnerDescription);
 
             UpdateSelectionData((uint)SelectionItemInfo.SpecialElement.Hierarchy, newItemDescription, hierarchyOwnerDescription);
-
-
 
             // Get the description of the item from the hierarchy
             object varDescription;
@@ -928,8 +943,6 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 LogSelectionChange((uint)SelectionItemInfo.SpecialElement.ItemID, oldItemDescription, newItemDescription, hierarchyOwnerDescription);
 
             UpdateSelectionData((uint)SelectionItemInfo.SpecialElement.ItemID, newItemDescription, hierarchyOwnerDescription);
-
-
 
             // Update multi select every time
             oldItemDescription = null;
@@ -970,7 +983,6 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
 
             UpdateSelectionData((uint)SelectionItemInfo.SpecialElement.MultiItemSelect, newItemDescription, hierarchyOwnerDescription);
-            
 
             // Update sc select every time
             oldItemDescription = null;
@@ -1004,8 +1016,6 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             UpdateSelectionData((uint)SelectionItemInfo.SpecialElement.SelectionContainer, newItemDescription, selectionContainerOwnerDescription);
 
-
-
             return VSConstants.S_OK;
         }
 
@@ -1030,12 +1040,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         public void Dispose()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             selectionMonitor.UnadviseSelectionEvents(selectionEventsCookie);
 
             IVsWritableSettingsStore settingsStore;

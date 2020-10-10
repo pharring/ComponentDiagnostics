@@ -15,12 +15,11 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void OnClearLinkClicked(object sender, System.Windows.RoutedEventArgs e)
         {
-            IVsUIDispatch dispatcher = DataContext as IVsUIDispatch;
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (dispatcher != null)
+            if (DataContext is IVsUIDispatch dispatcher)
             {
-                object ignored;
-                dispatcher.Invoke ("Clear", pvaIn: null, pvaOut: out ignored);
+                _ = dispatcher.Invoke("Clear", pvaIn: null, pvaOut: out _);
             }
         }
     }

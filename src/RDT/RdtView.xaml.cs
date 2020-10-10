@@ -44,6 +44,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _sink = new RdtEventSink(DataContext as RdtDiagnosticsDataSource);
             _sink.Advise();
         }

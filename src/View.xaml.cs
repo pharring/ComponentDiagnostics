@@ -45,6 +45,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void SelectNewViewPresenter(IVsUIDataSource dataContext, ContentControl contentHost)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 ProviderDataSourceWrapper providerModel = new ProviderDataSourceWrapper(dataContext);
@@ -80,6 +81,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void UpdateCurrentViewElementModel(ContentControl contentHost, object viewModel)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             // TODO: IVsUIElement.put_DataSource should accept any object, not just Gel datamodels.
             //       At which point, this reduces to just "currentViewElement.put_DataSource(viewModel)"
 
@@ -150,6 +152,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void viewPresenter_Reloaded(object sender, RoutedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             ContentControl contentHost = (ContentControl)sender;
             contentHost.Loaded -= viewPresenter_Reloaded;
 

@@ -15,6 +15,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public RdtEntry(RunningDocumentInfo info)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Cookie = info.DocCookie;
             Moniker = info.Moniker;
             ReadLocks = info.ReadLocks;
@@ -24,8 +25,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             if (info.IsDocumentInitialized)
             {
-                IVsPersistDocData persist = info.DocData as IVsPersistDocData;
-                if (persist != null)
+                if (info.DocData is IVsPersistDocData persist)
                 {
                     int isDirty;
                     persist.IsDocDataDirty(out isDirty);
@@ -38,11 +38,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     }
                 }
 
-                IVsPersistDocData2 persist2 = info.DocData as IVsPersistDocData2;
-                if (persist2 != null)
+                if (info.DocData is IVsPersistDocData2 persist2)
                 {
-                    int isReadOnly;
-                    persist2.IsDocDataReadOnly(out isReadOnly);
+                    persist2.IsDocDataReadOnly(out int isReadOnly);
                     IsReadOnly = Convert.ToBoolean(isReadOnly);
                 }
             }

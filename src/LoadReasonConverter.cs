@@ -1,84 +1,65 @@
-﻿using System;
-using Microsoft.Internal.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.PlatformUI;
+﻿using Microsoft.VisualStudio.PlatformUI;
 
 namespace Microsoft.VisualStudio.ComponentDiagnostics
 {
     sealed class LoadReasonConverter : ValueConverter<int, string>
     {
+        // Package load reason codes used by the shell
+        // These values are passed into IVsShell5::LoadPackageWithContext 
+        private enum LoadPackageReasonPrivate
+        {
+            LR_Unknown = -1,   // Direct call to IVsShell::LoadPackage
+            LR_Preload = -2,   // Pre-load mechanism as used by vslog (obfuscated and undocumented)
+            LR_Autoload = -3,   // Autoload through a UI context activation
+            LR_QueryService = -4,   // IServiceProvider::QueryService
+            LR_EditorFactory = -5,   // Creating an editor
+            LR_ProjectFactory = -6,   // Creating a project system
+            LR_Toolwindow = -7,   // Creating a tool window
+            LR_ExecCmd = -8,   // IOleCommandTarget::ExecCmd
+            LR_ExtensionPoint = -9,   // In order to find an extension point (export)
+            LR_UIFactory = -10,  // UI factory
+            LR_DataSourceFactory = -11,  // Datasource factory
+            LR_Toolbox = -12,  // Toolbox
+            LR_Automation = -13,  // Automation (GetAutomationObject)
+            LR_HelpAbout = -14,  // Help/About information
+            LR_AddStandardPreviewer = -15,  // AddStandardPreviewer (browser) support
+            LR_ComponentPicker = -16,  // Component picker (IVsComponentSelectorProvider)
+            LR_SolutionPersistence = -17,  // IVsSolutionProps
+            LR_FontsAndColors = -18,  // QueryService call for IVsTextMarkerTypeProvider.
+            LR_CommandLineSwitch = -19,  // DemandLoad specified on AppCommandLoad
+            LR_DataConverter = -20,  // UIDataConverter
+            LR_ToolsOptions = -21,  // A page in Tools/Options
+            LR_ImportExportSettings = -22,  // Import/Export settings
+        };
+
         protected override string Convert(int value, object parameter, System.Globalization.CultureInfo culture)
         {
-            switch((LoadPackageReasonPrivate)value)
+            return ((LoadPackageReasonPrivate)value) switch
             {
-                case LoadPackageReasonPrivate.LR_AddStandardPreviewer:
-                    return "Add Standard Previewer";
-
-                case LoadPackageReasonPrivate.LR_Autoload:
-                    return "AutoLoad";
-
-                case LoadPackageReasonPrivate.LR_Automation:
-                    return "Automation";
-
-                case LoadPackageReasonPrivate.LR_CommandLineSwitch:
-                    return "Command Line Switch";
-
-                case LoadPackageReasonPrivate.LR_ComponentPicker:
-                    return "Component Picker";
-
-                case LoadPackageReasonPrivate.LR_DataConverter:
-                    return "Data Converter";
-
-                case LoadPackageReasonPrivate.LR_DataSourceFactory:
-                    return "DataSource Factory";
-
-                case LoadPackageReasonPrivate.LR_EditorFactory:
-                    return "Editor Factory";
-
-                case LoadPackageReasonPrivate.LR_ExecCmd:
-                    return "Command Execution";
-
-                case LoadPackageReasonPrivate.LR_ExtensionPoint:
-                    return "Package Extension Point";
-
-                case LoadPackageReasonPrivate.LR_FontsAndColors:
-                    return "Fonts & Colors";
-
-                case LoadPackageReasonPrivate.LR_HelpAbout:
-                    return "Help/About";
-
-                case LoadPackageReasonPrivate.LR_ImportExportSettings:
-                    return "Import/Export Settings";
-
-                case LoadPackageReasonPrivate.LR_Preload:
-                    return "Preload";
-
-                case LoadPackageReasonPrivate.LR_ProjectFactory:
-                    return "Project Factory";
-
-                case LoadPackageReasonPrivate.LR_QueryService:
-                    return "QueryService";
-
-                case LoadPackageReasonPrivate.LR_SolutionPersistence:
-                    return "Solution Persistence";
-
-                case LoadPackageReasonPrivate.LR_Toolbox:
-                    return "Toolbox";
-
-                case LoadPackageReasonPrivate.LR_ToolsOptions:
-                    return "Tools/Options";
-
-                case LoadPackageReasonPrivate.LR_Toolwindow:
-                    return "Toolwindow";
-
-                case LoadPackageReasonPrivate.LR_UIFactory:
-                    return "UI Factory";
-
-                case LoadPackageReasonPrivate.LR_Unknown:
-                    return "Unknown (direct LoadPackage)";
-
-                default:
-                    return string.Format("Reason code {0}", value);
-            }
+                LoadPackageReasonPrivate.LR_AddStandardPreviewer => "Add Standard Previewer",
+                LoadPackageReasonPrivate.LR_Autoload => "AutoLoad",
+                LoadPackageReasonPrivate.LR_Automation => "Automation",
+                LoadPackageReasonPrivate.LR_CommandLineSwitch => "Command Line Switch",
+                LoadPackageReasonPrivate.LR_ComponentPicker => "Component Picker",
+                LoadPackageReasonPrivate.LR_DataConverter => "Data Converter",
+                LoadPackageReasonPrivate.LR_DataSourceFactory => "DataSource Factory",
+                LoadPackageReasonPrivate.LR_EditorFactory => "Editor Factory",
+                LoadPackageReasonPrivate.LR_ExecCmd => "Command Execution",
+                LoadPackageReasonPrivate.LR_ExtensionPoint => "Package Extension Point",
+                LoadPackageReasonPrivate.LR_FontsAndColors => "Fonts & Colors",
+                LoadPackageReasonPrivate.LR_HelpAbout => "Help/About",
+                LoadPackageReasonPrivate.LR_ImportExportSettings => "Import/Export Settings",
+                LoadPackageReasonPrivate.LR_Preload => "Preload",
+                LoadPackageReasonPrivate.LR_ProjectFactory => "Project Factory",
+                LoadPackageReasonPrivate.LR_QueryService => "QueryService",
+                LoadPackageReasonPrivate.LR_SolutionPersistence => "Solution Persistence",
+                LoadPackageReasonPrivate.LR_Toolbox => "Toolbox",
+                LoadPackageReasonPrivate.LR_ToolsOptions => "Tools/Options",
+                LoadPackageReasonPrivate.LR_Toolwindow => "Toolwindow",
+                LoadPackageReasonPrivate.LR_UIFactory => "UI Factory",
+                LoadPackageReasonPrivate.LR_Unknown => "Unknown (direct LoadPackage)",
+                _ => string.Format("Reason code {0}", value),
+            };
         }
     }
 }

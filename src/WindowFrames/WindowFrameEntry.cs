@@ -11,6 +11,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     {
         public WindowFrameEntry(WindowFrameInfo windowFrameInfo)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Caption = windowFrameInfo.Caption;
             CmdUIGuid = windowFrameInfo.CmdUIGuid;
             CreateWinFlags = windowFrameInfo.CreateWinFlags;
@@ -205,6 +206,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         internal void Update(WindowFrameInfo newFrameInfo)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             this.Caption = newFrameInfo.Caption;
             this.CmdUIGuid = newFrameInfo.CmdUIGuid;
             this.CreateWinFlags = newFrameInfo.CreateWinFlags;

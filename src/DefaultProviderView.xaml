@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:winforms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:dataTypes="clr-namespace:GelTreeViewDataTypes"
-             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              DataContextChanged="OnDataContextChanged"
              >
     <DockPanel x:Uid="DockPanel_1">

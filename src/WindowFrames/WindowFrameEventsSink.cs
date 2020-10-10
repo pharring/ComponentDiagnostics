@@ -17,18 +17,21 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void Advise()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsUIShell7 uiShell = (IVsUIShell7)Package.GetGlobalService(typeof(SVsUIShell));
             _cookie = uiShell.AdviseWindowFrameEvents(this);
         }
 
         public void Unadvise()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsUIShell7 uiShell = (IVsUIShell7)Package.GetGlobalService(typeof(SVsUIShell));
             uiShell.UnadviseWindowFrameEvents(_cookie);
         }
 
         public void OnFrameCreated(IVsWindowFrame frame)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var frameInfo = new WindowFrameInfo(frame);
 
             RecordEvent($"{frameInfo.DocumentPath}");
@@ -41,6 +44,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void OnFrameDestroyed(IVsWindowFrame frame)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var frameInfo = new WindowFrameInfo(frame);
 
             RecordEvent($"{frameInfo.DocumentPath}");
@@ -53,6 +57,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void OnFrameIsVisibleChanged(IVsWindowFrame frame, bool newIsVisible)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var frameInfo = new WindowFrameInfo(frame);
 
             RecordEvent($"{frameInfo.Caption}. IsVisible={newIsVisible}");
@@ -65,6 +70,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void OnFrameIsOnScreenChanged(IVsWindowFrame frame, bool newIsOnScreen)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var frameInfo = new WindowFrameInfo(frame);
 
             RecordEvent($"{frameInfo.Caption}. IsOnScreen={newIsOnScreen}");
@@ -72,6 +78,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void OnActiveFrameChanged(IVsWindowFrame oldFrame, IVsWindowFrame newFrame)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             string? oldFrameCaption = (oldFrame != null) ? new WindowFrameInfo(oldFrame).Caption : null;
             string? newFrameCaption = (newFrame != null) ? new WindowFrameInfo(newFrame).Caption : null;
 
@@ -85,6 +92,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void OnFrameViewReplaced(IVsWindowFrame frame)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             var frameInfo = new WindowFrameInfo(frame);
 
             RecordEvent($"{frameInfo.Caption}. New view = {frameInfo.DocView}");

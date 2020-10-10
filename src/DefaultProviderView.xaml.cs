@@ -27,6 +27,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             bool isListeningToPropertyChanges = this.autoRefresh.IsChecked.GetValueOrDefault();
 
             if (isListeningToPropertyChanges)
@@ -56,6 +57,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void SetTreeViewRootNode(object value)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             object gelNode = GelTreeViewDataTypes.Utilities.CreateAppropriateRootNode(value);
 
             // Enable the "Show Gel TreeView" check box only if we have a Gel data type.
@@ -192,6 +194,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void showTreeViewCheckBox_Checked(object sender, RoutedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (this.IsLoaded)
             {
                 ShowGelTreeView(GelTreeViewDataTypes.Utilities.CreateAppropriateRootNode(this.DataContext));

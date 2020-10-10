@@ -21,6 +21,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (string)value : default;
@@ -31,6 +32,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetGuidProperty((int)__VSFPROPID.VSFPROPID_CmdUIGuid, out Guid value);
 
                 return ErrorHandler.Succeeded(hr) ? value : default;
@@ -41,6 +43,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 __VSFPROPID property = (this.Type == __WindowFrameTypeFlags.WINDOWFRAMETYPE_Document) ? __VSFPROPID.VSFPROPID_CreateDocWinFlags : __VSFPROPID.VSFPROPID_CreateToolWinFlags;
 
                 int hr = _windowFrame.GetProperty((int)property, out object value);
@@ -65,6 +68,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (int)value : default;
@@ -75,6 +79,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 string? docDataAsString = null;
 
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocData, out object value);
@@ -142,6 +147,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (string)value : default;
@@ -152,6 +158,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? value?.ToString() : default;
@@ -166,6 +173,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 __VSFPROPID property = (this.Type == __WindowFrameTypeFlags.WINDOWFRAMETYPE_Document) ? __VSFPROPID.VSFPROPID_guidEditorType : __VSFPROPID.VSFPROPID_GuidPersistenceSlot;
 
                 int hr = _windowFrame.GetGuidProperty((int)property, out Guid value);
@@ -178,6 +186,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (VsFrameMode)value : default;
@@ -188,6 +197,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Hierarchy, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? value?.ToString() : default;
@@ -198,6 +208,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return _windowFrame.IsVisible() == VSConstants.S_OK;
             }
         }
@@ -206,6 +217,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty(VSFPROPID_IsWaitFrame, out object value);
 
                 return ErrorHandler.Succeeded(hr) && (bool)value;
@@ -216,6 +228,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_IsWindowTabbed, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (__VSTABBEDMODE)(short)value : default;
@@ -226,6 +239,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_ItemID, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (int)value : default;
@@ -236,6 +250,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID6.VSFPROPID_PendingInitialization, out object value);
 
                 return ErrorHandler.Succeeded(hr) && (bool)value;
@@ -246,6 +261,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_pszPhysicalView, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (string)value : default;
@@ -256,6 +272,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_RDTDocData, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? value?.ToString() : default;
@@ -266,6 +283,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_ShortCaption, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (string)value : default;
@@ -276,6 +294,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Type, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (__WindowFrameTypeFlags)(int)value : default;
@@ -286,6 +305,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 int hr = _windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_WindowState, out object value);
 
                 return ErrorHandler.Succeeded(hr) ? (VSWINDOWSTATE)value : default;

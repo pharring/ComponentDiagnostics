@@ -25,6 +25,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public RunningDocumentInfo(IVsRunningDocumentTable rdt, uint docCookie)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             Validate.IsNotNull(rdt, "rdt");
             _rdt = rdt;
             _rdt4 = rdt as IVsRunningDocumentTable4;
@@ -123,6 +125,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 if (_shouldRequestDocData)
                 {
                     _docData = _rdt4.GetDocumentData(DocCookie);
@@ -142,6 +145,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 if (_shouldRequestHierarchyItem)
                 {
                     _rdt4.GetDocumentHierarchyItem(DocCookie, out _hierarchy, out _itemId);
@@ -161,6 +165,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (_shouldRequestHierarchyItem)
                 {
                     _rdt4.GetDocumentHierarchyItem(DocCookie, out _hierarchy, out _itemId);

@@ -63,9 +63,12 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 IVsSettingsManager manager = ServiceProvider.GlobalProvider.GetService(typeof(SVsSettingsManager)) as IVsSettingsManager;
-                IVsSettingsStore store;
-                ErrorHandler.ThrowOnFailure(manager.GetReadOnlySettingsStore((uint)__VsSettingsScope.SettingsScope_Configuration, out store));
+                Assumes.Present(manager);
+
+                ErrorHandler.ThrowOnFailure(manager.GetReadOnlySettingsStore((uint)__VsSettingsScope.SettingsScope_Configuration, out IVsSettingsStore store));
                 return store;
             }
         }
@@ -75,6 +78,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         // Private constructor
         private Settings()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             this.Store = ReadOnlyConfigSettings;
         }
 
@@ -86,6 +90,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns>Enumeration of subkey names</returns>
         IEnumerable<string> GetSubKeys(string path)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             uint subCollectionCount;
             int hr = this.Store.GetSubCollectionCount(path, out subCollectionCount);
             if (hr == VSConstants.E_INVALIDARG)
@@ -116,6 +121,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns>true if the view information was parsed successfully</returns>
         bool TryReadVersionedProvider(string viewsPath, string versionName, ref ProviderRegistration provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (!uint.TryParse(versionName, out provider.version))
             {
                 Debug.WriteLine("WARNING: Diagnostics provider '{0}' has a versioned View '{1}' which is not a DWORD", viewsPath, versionName);
@@ -161,6 +168,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// the given provider.</returns>
         IEnumerable<ProviderRegistration> GetRegisteredViews(string providerPath)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ProviderRegistration provider = new ProviderRegistration();
 
             // Check that the provider is a GUID and that it has a sensible default value (name)
@@ -220,6 +228,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 Settings settings = new Settings();
 
                 // Loop over all providers under the DiagnosticsProviders key

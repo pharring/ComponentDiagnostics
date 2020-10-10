@@ -23,6 +23,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public bool TryFindEntry(WindowFrameInfo windowFrameInfo, out WindowFrameEntry windowFrameEntry)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             windowFrameEntry = Entries.FirstOrDefault(_ => string.Equals(_.DocumentPath, windowFrameInfo.DocumentPath, StringComparison.OrdinalIgnoreCase) &&
                                                            _.EditorType.Equals(windowFrameInfo.EditorType) &&
                                                            string.Equals(_.PhysicalView, windowFrameInfo.PhysicalView, StringComparison.OrdinalIgnoreCase));
@@ -32,6 +33,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public bool GetOrAddEntry(WindowFrameInfo windowFrameInfo, out WindowFrameEntry? windowFrameEntry)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (TryFindEntry(windowFrameInfo, out windowFrameEntry))
             {
                 return true;
@@ -49,6 +51,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void AddOrUpdateEntry(IVsWindowFrame vsWindowFrame)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (vsWindowFrame == null)
             {
                 return;
@@ -102,6 +105,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private bool WindowFrameCanBeShown(WindowFrameInfo windowFrameInfo)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             return (windowFrameInfo.Type == __WindowFrameTypeFlags.WINDOWFRAMETYPE_Document) ? ShowDocumentWindowFrames :
                 (windowFrameInfo.Type == __WindowFrameTypeFlags.WINDOWFRAMETYPE_Tool) && ShowToolWindowFrames;
         }

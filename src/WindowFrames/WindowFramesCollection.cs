@@ -14,6 +14,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public WindowFramesCollection(bool showDocumentWindowFrames, bool showToolWindowFrames)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (Package.GetGlobalService(typeof(SVsUIShell)) is IVsUIShell uiShell)
             {
                 if (showDocumentWindowFrames)

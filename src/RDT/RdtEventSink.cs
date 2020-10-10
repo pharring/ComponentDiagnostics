@@ -24,12 +24,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         public void Advise()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsRunningDocumentTable rdt = (IVsRunningDocumentTable) Package.GetGlobalService(typeof(SVsRunningDocumentTable));
             rdt.AdviseRunningDocTableEvents (this, out _cookie);
         }
 
         public void Unadvise()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsRunningDocumentTable rdt = (IVsRunningDocumentTable) Package.GetGlobalService(typeof(SVsRunningDocumentTable));
             rdt.UnadviseRunningDocTableEvents (_cookie);
         }

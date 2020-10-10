@@ -22,6 +22,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         internal static ServiceDataModel CreateInstance()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             ServiceDataModel dataModel = new ServiceDataModel();
 
             UIDataSourceCollection providers = new UIDataSourceCollection();

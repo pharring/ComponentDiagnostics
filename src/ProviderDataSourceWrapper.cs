@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.ComponentDiagnostics
@@ -9,22 +8,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     /// </summary>
     class ProviderDataSourceWrapper
     {
-        IVsUIDataSource ds;
+        private readonly IVsUIDataSource ds;
 
         public ProviderDataSourceWrapper(IVsUIDataSource datasource)
         {
             this.ds = datasource;
         }
 
-        T GetValue<T>(string property)
-        {
-            return Utilities.QueryTypedValue<T>(this.ds, property);
-        }
+        T GetValue<T>(string property) => Internal.VisualStudio.PlatformUI.Utilities.QueryTypedValue<T>(this.ds, property);
 
-        object GetValue(string property)
-        {
-            return Utilities.QueryValue(this.ds, property);
-        }
+        object GetValue(string property) => Internal.VisualStudio.PlatformUI.Utilities.QueryValue(this.ds, property);
 
         public VsUIElementDescriptor ViewDescriptor
         {

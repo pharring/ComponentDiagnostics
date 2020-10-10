@@ -18,6 +18,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private static object GetModel(GelDependencyObject owner)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             RegisteredProvider me = (RegisteredProvider)owner;
             return me.Model;
         }
@@ -26,12 +27,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 return DiagnosticsProvider.DataModel;
             }
         }
 
         private static object GetVersion(GelDependencyObject owner)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             RegisteredProvider me = (RegisteredProvider)owner;
             return me.Version;
         }
@@ -40,6 +43,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
+                Shell.ThreadHelper.ThrowIfNotOnUIThread();
                 return DiagnosticsProvider.Version;
             }
         }

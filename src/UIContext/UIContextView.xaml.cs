@@ -57,6 +57,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     {
         public UIContextView()
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             InitializeComponent();
             Loaded += delegate(object sender, RoutedEventArgs e)
             {
@@ -73,11 +74,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void SelectionToolTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             UpdateCommands();
         }
 
         private void LiveListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Shell.ThreadHelper.ThrowIfNotOnUIThread();
             UpdateCommands();
         }
 
@@ -119,6 +122,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void ToggleStatusClicked(object sender, RoutedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UIContextInformation item;
 
             item = SelectedInfo();
@@ -149,6 +153,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void UpdateCommands()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             addToFavoritesButton.IsEnabled = (SelectionToolTabs.SelectedItem != tabFavorites);
             removeFromFavoritesButton.IsEnabled = (SelectionToolTabs.SelectedItem == tabFavorites);
             toggleStatusButton.IsEnabled = (SelectionToolTabs.SelectedItem == tabFavorites);

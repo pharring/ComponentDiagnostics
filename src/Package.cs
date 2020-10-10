@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -11,14 +12,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     [Guid(GuidList.PackageString)]
     [ProvideMenuResource("Menus.ctmenu", 1)] // Matches the name given to the .cto included in VSPackage.resx
     [ProvideUIProvider(GuidList.UiFactoryString, "ComponentDiagnostics", GuidList.PackageString)]
+#pragma warning disable VSSDK003 // Support async tool windows
     [ProvideToolWindow(typeof(ToolWindow))]
-    [PackageRegistration(UseManagedResourcesOnly=true, RegisterUsing=RegistrationMethod.CodeBase)]
+#pragma warning restore VSSDK003 // Support async tool windows
+    [PackageRegistration(UseManagedResourcesOnly=true, RegisterUsing=RegistrationMethod.CodeBase, AllowsBackgroundLoading = true)]
     [Description("Visual Studio Component Diagnostics Package")]
     [ProvideComponentDiagnostics(typeof(RdtDiagnosticsProvider), "Running Document Table", GuidList.UiFactoryString, UIElementIds.RdtView)]
     [ProvideComponentDiagnostics(typeof(UIContextDiagnosticsProvider), "Selection and UIContext", GuidList.UiFactoryString, UIElementIds.UIContextView)]
     [ProvideComponentDiagnostics(typeof(ScrollbarDiagnosticsProvider), "Scrollbar Theming", GuidList.UiFactoryString, UIElementIds.ScrollbarView)]
     [ProvideComponentDiagnostics(typeof(WindowFramesDiagnosticsProvider), "Window Frames", GuidList.UiFactoryString, UIElementIds.WindowFramesView)]
-    public sealed class Package : Microsoft.VisualStudio.Shell.ExtensionPointPackage
+    public sealed class Package : ExtensionPointAsyncPackage
     {
         static Package _instance;
         public static Package Instance
@@ -26,10 +29,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             get { return _instance; }
         }
 
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             _instance = this;
-            base.Initialize();
+
+            await base.InitializeAsync(cancellationToken, progress);
+
+            await base.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             Telemetry.Client.TrackEvent("Package.Initialize", Telemetry.CreateProperties("VSVersion", GetVSVersion()));
             UIFactory.CreateAndRegister(this);
             AddCommandHandlers();
@@ -37,11 +44,11 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private string GetVSVersion()
         {
-            var shell = GetService(typeof(SVsShell)) as IVsShell;
-            if (shell != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (GetService(typeof(SVsShell)) is IVsShell shell)
             {
-                object obj;
-                if (ErrorHandler.Succeeded(shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out obj)) && obj != null)
+                if (ErrorHandler.Succeeded(shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out object obj)) && obj != null)
                 {
                     return obj.ToString();
                 }
@@ -52,8 +59,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void AddCommandHandlers()
         {
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
+            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 // Create the command for the tool window
                 CommandID toolwndCommandID = new CommandID(GuidList.CommandSet, (int)PkgCmdID.cmdidViewComponentDiagnosticsToolWindow);
@@ -67,6 +73,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// </summary>
         void ShowToolWindow(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             Telemetry.Client.TrackEvent("ShowToolWindow");
 
             // Get the instance number 0 of this tool window. This window is single instance so this instance
@@ -77,8 +85,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
+
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }
