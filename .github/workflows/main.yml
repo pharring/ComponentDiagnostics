@@ -23,6 +23,6 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       
       - name: Restore and Build the application
-        run: msbuild src /t:Restore;Build /p:Configuration=$env:Configuration /p:DeployExtension=false
+        run: msbuild src /t:Restore,Build /p:Configuration=$env:Configuration /p:DeployExtension=false
         env:
           Configuration: ${{ matrix.configuration }}
