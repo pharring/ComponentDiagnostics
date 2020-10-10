@@ -13,7 +13,7 @@ using System.Runtime.Versioning;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Paul Harrington")]
 [assembly: AssemblyProduct("Visual Studio Component Diagnostics")]
-[assembly: AssemblyCopyright("© 2018 Paul Harrington")]
+[assembly: AssemblyCopyright("© 2020 Paul Harrington")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]   
 [assembly: ComVisible(false)]     
@@ -30,8 +30,8 @@ using System.Runtime.Versioning;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.20.0819.0")]
-[assembly: AssemblyFileVersion("1.20.0819.0")]
+[assembly: AssemblyVersion("1.20.1010.0")]
+[assembly: AssemblyFileVersion("1.20.1010.0")]
 
 // Declare the component guarantees. This is an assembly with internal API, that is not intended for public use.
 [assembly: ComponentGuarantees(ComponentGuaranteesOptions.None)]
