@@ -1,6 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/vsix-publish",
-  "categories": [ "other", "visual studio extensions" ],
+  "categories": [ "other" ],
   "identity": {
     "internalName": "ComponentDiagnostics"
   },
