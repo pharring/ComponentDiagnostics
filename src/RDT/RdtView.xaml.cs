@@ -65,8 +65,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void OnClearClicked(object sender, RoutedEventArgs e)
         {
-            RdtDiagnosticsDataSource ds = DataContext as RdtDiagnosticsDataSource;
-            if (ds == null)
+            if (!(DataContext is RdtDiagnosticsDataSource ds))
                 return;
 
             ds.ClearEvents();

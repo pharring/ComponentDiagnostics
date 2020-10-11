@@ -9,8 +9,6 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     {
         private readonly IVsRunningDocumentTable _rdt;
         private readonly IVsRunningDocumentTable4 _rdt4;
-
-        private uint _docCookie;
         private uint _flags;
         private uint _readLocks;
         private uint _editLocks;
@@ -31,7 +29,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             _rdt = rdt;
             _rdt4 = rdt as IVsRunningDocumentTable4;
 
-            _docCookie = docCookie;
+            DocCookie = docCookie;
             _flags = 0;
             _readLocks = 0;
             _editLocks = 0;
@@ -85,40 +83,36 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
         }
 
-        public uint DocCookie
-        {
-            get { return _docCookie; }
-            set { _docCookie = value; }
-        }
+        public uint DocCookie { get; set; }
 
         public uint Flags
         {
-            get { return _flags; }
-            set { _flags = value; }
+            get => _flags;
+            set => _flags = value;
         }
 
         public uint ReadLocks
         {
-            get { return _readLocks; }
-            set { _readLocks = value; }
+            get => _readLocks;
+            set => _readLocks = value;
         }
 
         public uint EditLocks
         {
-            get { return _editLocks; }
-            set { _editLocks = value; }
+            get => _editLocks;
+            set => _editLocks = value;
         }
 
         public string Moniker
         {
-            get { return _moniker; }
-            set { _moniker = value; }
+            get => _moniker;
+            set => _moniker = value;
         }
 
         public Guid ProjectGuid
         {
-            get { return _projectGuid; }
-            set { _projectGuid = value; }
+            get => _projectGuid;
+            set => _projectGuid = value;
         }
 
         public object DocData
@@ -182,20 +176,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
         }
 
-        public bool IsDocumentInitialized
-        {
-            get
-            {
-                return ((Flags & (uint)_VSRDTFLAGS4.RDT_PendingInitialization) == 0);
-            }
-        }
+        public bool IsDocumentInitialized => (Flags & (uint)_VSRDTFLAGS4.RDT_PendingInitialization) == 0;
 
-        public bool IsHierarchyInitialized
-        {
-            get
-            {
-                return ((Flags & (uint)_VSRDTFLAGS4.RDT_PendingHierarchyInitialization) == 0);
-            }
-        }
+        public bool IsHierarchyInitialized => (Flags & (uint)_VSRDTFLAGS4.RDT_PendingHierarchyInitialization) == 0;
     }
 }

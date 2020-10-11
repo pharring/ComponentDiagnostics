@@ -130,8 +130,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             if (item != null)
             {
                 IVsMonitorSelection selectionMonitor = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
-                int active;
-                selectionMonitor.IsCmdUIContextActive(item.ID, out active);
+                selectionMonitor.IsCmdUIContextActive(item.ID, out var active);
                 selectionMonitor.SetCmdUIContext(item.ID, (active == 0) ? 1 : 0);
             }
         }

@@ -13,23 +13,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private static string Convert(__VSTASKRUNCONTEXT value)
         {
-            switch (value)
+            return value switch
             {
-                case __VSTASKRUNCONTEXT.VSTC_UITHREAD_SEND:
-                    return "UI Thread - RPC";
-                case __VSTASKRUNCONTEXT.VSTC_BACKGROUNDTHREAD:
-                    return "Background Thread";
-                case __VSTASKRUNCONTEXT.VSTC_UITHREAD_BACKGROUND_PRIORITY:
-                    return "UI Thread - Background";
-                case __VSTASKRUNCONTEXT.VSTC_UITHREAD_IDLE_PRIORITY:
-                    return "UI Thread - Idle";
-                case __VSTASKRUNCONTEXT.VSTC_UITHREAD_NORMAL_PRIORITY:
-                    return "UI Thread - Normal";
-                case __VSTASKRUNCONTEXT.VSTC_BACKGROUNDTHREAD_LOW_IO_PRIORITY:
-                    return "Background, low I/O";
-                default:
-                    return value.ToString();
-            }
+                __VSTASKRUNCONTEXT.VSTC_UITHREAD_SEND => "UI Thread - RPC",
+                __VSTASKRUNCONTEXT.VSTC_BACKGROUNDTHREAD => "Background Thread",
+                __VSTASKRUNCONTEXT.VSTC_UITHREAD_BACKGROUND_PRIORITY => "UI Thread - Background",
+                __VSTASKRUNCONTEXT.VSTC_UITHREAD_IDLE_PRIORITY => "UI Thread - Idle",
+                __VSTASKRUNCONTEXT.VSTC_UITHREAD_NORMAL_PRIORITY => "UI Thread - Normal",
+                __VSTASKRUNCONTEXT.VSTC_BACKGROUNDTHREAD_LOW_IO_PRIORITY => "Background, low I/O",
+                _ => value.ToString(),
+            };
         }
     }
 }

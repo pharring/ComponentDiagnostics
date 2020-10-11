@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         public RunningDocumentInfo GetDocumentInfo(uint docCookie)
         {
             if (_rdt == null)
-                return default(RunningDocumentInfo);
+                return default;
 
             return new RunningDocumentInfo(_rdt, docCookie);
         }
@@ -28,16 +28,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             if (_rdt == null)
                 yield break;
 
-            IEnumRunningDocuments docEnum;
-            if (ErrorHandler.Failed(_rdt.GetRunningDocumentsEnum(out docEnum)) || (docEnum == null))
+            if (ErrorHandler.Failed(_rdt.GetRunningDocumentsEnum(out var docEnum)) || (docEnum == null))
                 yield break;
 
             const int count = 10;
             uint[] cookies = new uint[count];
-            uint fetched;
             int hr;
 
-            while (ErrorHandler.Succeeded(hr = docEnum.Next((uint)cookies.Length, cookies, out fetched)))
+            while (ErrorHandler.Succeeded(hr = docEnum.Next((uint)cookies.Length, cookies, out var fetched)))
             {
                 for (int i = 0; i < (int)fetched; i++)
                 {

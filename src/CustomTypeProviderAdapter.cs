@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.ComponentDiagnostics
 {
@@ -15,144 +14,76 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     {
         private readonly ICustomTypeProvider typeProvider;
 
-        private Type CustomType
-        {
-            get
-            {
-                return this.typeProvider.GetCustomType();
-            }
-        }
+        private Type CustomType => typeProvider.GetCustomType();
 
-        public CustomTypeProviderAdapter(ICustomTypeProvider typeProvider)
-        {
-            this.typeProvider = typeProvider;
-        }
+        public CustomTypeProviderAdapter(ICustomTypeProvider typeProvider) => this.typeProvider = typeProvider;
 
-        public AttributeCollection GetAttributes()
-        {
-            return new AttributeCollection(null);
-        }
+        public AttributeCollection GetAttributes() => new AttributeCollection(null);
 
-        public string GetClassName()
-        {
-            return this.CustomType.Name;
-        }
+        public string GetClassName() => CustomType.Name;
 
-        public string GetComponentName()
-        {
-            return null;
-        }
+        public string GetComponentName() => null;
 
-        public TypeConverter GetConverter()
-        {
-            return null;
-        }
+        public TypeConverter GetConverter() => null;
 
-        public EventDescriptor GetDefaultEvent()
-        {
-            return null;
-        }
+        public EventDescriptor GetDefaultEvent() => null;
 
-        public PropertyDescriptor GetDefaultProperty()
-        {
-            return null;
-        }
+        public PropertyDescriptor GetDefaultProperty() => null;
 
-        public object GetEditor(Type editorBaseType)
-        {
-            return null;
-        }
+        public object GetEditor(Type editorBaseType) => null;
 
-        public EventDescriptorCollection GetEvents(Attribute[] attributes)
-        {
-            return null;
-        }
+        public EventDescriptorCollection GetEvents(Attribute[] attributes) => null;
 
-        public EventDescriptorCollection GetEvents()
-        {
-            return null;
-        }
+        public EventDescriptorCollection GetEvents() => null;
 
-        public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-        {
-            return GetProperties();
-        }
+        public PropertyDescriptorCollection GetProperties(Attribute[] attributes) => GetProperties();
 
         public PropertyDescriptorCollection GetProperties()
         {
-            var result = from p in this.CustomType.GetProperties() select new AdapterPropertyDescriptor(p);
+            var result = from p in CustomType.GetProperties() select new AdapterPropertyDescriptor(p);
             return new PropertyDescriptorCollection(result.ToArray<PropertyDescriptor>());
         }
 
-        public object GetPropertyOwner(PropertyDescriptor pd)
-        {
-            return this.typeProvider;
-        }
+        public object GetPropertyOwner(PropertyDescriptor pd) => typeProvider;
 
         class AdapterPropertyDescriptor : PropertyDescriptor
         {
-            PropertyInfo propertyInfo;
+            private readonly PropertyInfo propertyInfo;
 
             public AdapterPropertyDescriptor(PropertyInfo propertyInfo) : base(propertyInfo.Name, null)
             {
                 this.propertyInfo = propertyInfo;
             }
 
-            public override bool CanResetValue(object component)
-            {
-                return false;
-            }
+            public override bool CanResetValue(object component) => false;
 
-            public override Type ComponentType
-            {
-                get { return propertyInfo.DeclaringType; }
-            }
+            public override Type ComponentType => propertyInfo.DeclaringType;
 
-            public override object GetValue(object component)
-            {
-                return propertyInfo.GetValue(component);
-            }
+            public override object GetValue(object component) => propertyInfo.GetValue(component);
 
-            public override bool IsReadOnly
-            {
-                get { return !propertyInfo.CanWrite; }
-            }
+            public override bool IsReadOnly => !propertyInfo.CanWrite;
 
-            public override Type PropertyType
-            {
-                get { return propertyInfo.PropertyType; }
-            }
+            public override Type PropertyType => propertyInfo.PropertyType;
 
-            public override void ResetValue(object component)
-            {
-                throw new NotImplementedException();
-            }
+            public override void ResetValue(object component) => throw new NotImplementedException();
 
-            public override void SetValue(object component, object value)
-            {
-                propertyInfo.SetValue(component, value);
-            }
+            public override void SetValue(object component, object value) => propertyInfo.SetValue(component, value);
 
-            public override bool ShouldSerializeValue(object component)
-            {
-                return false;
-            }
+            public override bool ShouldSerializeValue(object component) => false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged
         {
             add
             {
-                INotifyPropertyChanged innerEventSource = this.typeProvider as INotifyPropertyChanged;
-                if (innerEventSource != null)
+                if (typeProvider is INotifyPropertyChanged innerEventSource)
                 {
                     innerEventSource.PropertyChanged += value;
                 }
             }
             remove
             {
-                INotifyPropertyChanged innerEventSource = this.typeProvider as INotifyPropertyChanged;
-                if (innerEventSource != null)
+                if (typeProvider is INotifyPropertyChanged innerEventSource)
                 {
                     innerEventSource.PropertyChanged -= value;
                 }

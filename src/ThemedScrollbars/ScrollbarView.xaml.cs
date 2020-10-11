@@ -38,8 +38,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void Refresh()
         {
-            ScrollbarDiagnosticsDataSource ds = DataContext as ScrollbarDiagnosticsDataSource;
-            if (ds == null)
+            if (!(DataContext is ScrollbarDiagnosticsDataSource ds))
                 return;
 
             ds.Refresh();

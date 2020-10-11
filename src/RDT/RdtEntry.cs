@@ -27,8 +27,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 if (info.DocData is IVsPersistDocData persist)
                 {
-                    int isDirty;
-                    persist.IsDocDataDirty(out isDirty);
+                    persist.IsDocDataDirty(out var isDirty);
                     IsDirty = Convert.ToBoolean(isDirty);
 
                     int hr = persist.GetGuidEditorType(out Guid editorType);
@@ -208,10 +207,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             if ((ReadLocks == 0) && (EditLocks == 0))
             {
-                EventHandler onFinalUnlock = OnFinalUnlock;
-
-                if (onFinalUnlock != null)
-                    onFinalUnlock(this, EventArgs.Empty);
+                OnFinalUnlock?.Invoke(this, EventArgs.Empty);
             }
         }
     }

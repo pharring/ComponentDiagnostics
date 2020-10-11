@@ -19,7 +19,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             GC.SuppressFinalize(this);
         }
 
-        virtual protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
         }
     }

@@ -89,8 +89,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 return o;
             }
 
-            ICustomTypeProvider typeProvider = o as ICustomTypeProvider;
-            if (typeProvider != null)
+            if (o is ICustomTypeProvider typeProvider)
             {
                 return new CustomTypeProviderAdapter(typeProvider);
             }
@@ -166,8 +165,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void SubscribeToPropertyChangedEvents(object source)
         {
-            INotifyPropertyChanged notifier = source as INotifyPropertyChanged;
-            if (notifier != null)
+            if (source is INotifyPropertyChanged notifier)
             {
                 notifier.PropertyChanged += DataSource_PropertyChanged;
             }
@@ -175,8 +173,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         void UnsubscribeFromPropertyChangedEvents(object source)
         {
-            INotifyPropertyChanged notifier = source as INotifyPropertyChanged;
-            if (notifier != null)
+            if (source is INotifyPropertyChanged notifier)
             {
                 notifier.PropertyChanged -= DataSource_PropertyChanged;
             }

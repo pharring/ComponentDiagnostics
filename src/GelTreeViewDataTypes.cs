@@ -26,13 +26,11 @@ namespace GelTreeViewDataTypes
             switch (gelType)
             {
                 case VsUIType.DataSource:
-                    IVsUIDataSource ds = value as IVsUIDataSource;
-                    if (ds == null) return new NullDataSource();
+                    if (!(value is IVsUIDataSource ds)) return new NullDataSource();
                     return new DataSourceNode(ds);
 
                 case VsUIType.Collection:
-                    IVsUICollection coll = value as IVsUICollection;
-                    if (coll == null) return new NullCollection();
+                    if (!(value is IVsUICollection coll)) return new NullCollection();
                     return new CollectionNode(coll);
 
                 default:
@@ -99,8 +97,7 @@ namespace GelTreeViewDataTypes
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (verbs == null)
                 {
-                    IVsUIEnumDataSourceVerbs enumVerbs;
-                    Marshal.ThrowExceptionForHR(this.ds.EnumVerbs(out enumVerbs));
+                    Marshal.ThrowExceptionForHR(this.ds.EnumVerbs(out var enumVerbs));
                     verbs = new List<string>(ComUtilities.EnumerableFrom(enumVerbs));
                     this.ds = null;
                 }
@@ -169,7 +166,7 @@ namespace GelTreeViewDataTypes
     /// </summary>
     class PropertyList
     {
-        IVsUIDataSource ds;
+        private readonly IVsUIDataSource ds;
 
         public PropertyList(IVsUIDataSource ds)
         {
@@ -244,7 +241,7 @@ namespace GelTreeViewDataTypes
     /// </summary>
     class DataSourceNode
     {
-        IVsUIDataSource ds;
+        private readonly IVsUIDataSource ds;
 
         public DataSourceNode(IVsUIDataSource ds)
         {
@@ -294,17 +291,7 @@ namespace GelTreeViewDataTypes
         private Shape _shape;
 
         [Description("The shape identifier uniquely identifies this arrangement of verbs and properties. All instances of data sources with this shape must have the same collection of verbs and properties. Expressed as a GUID:DWORD pair.")]
-        public Shape Shape
-        {
-            get
-            {
-                if (_shape == null)
-                {
-                    _shape = new Shape(this.ds);
-                }
-                return _shape;
-            }
-        }
+        public Shape Shape => _shape ??= new Shape(ds);
     }
 
     /// <summary>
@@ -312,7 +299,7 @@ namespace GelTreeViewDataTypes
     /// </summary>
     class CollectionItems
     {
-        IVsUICollection coll;
+        private readonly IVsUICollection coll;
         public CollectionItems(IVsUICollection coll)
         {
             this.coll = coll ?? throw new ArgumentNullException("coll");
@@ -324,8 +311,7 @@ namespace GelTreeViewDataTypes
             get
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
-                uint count;
-                this.coll.get_Count(out count);
+                this.coll.get_Count(out var count);
                 return count;
             }
         }
@@ -351,7 +337,7 @@ namespace GelTreeViewDataTypes
     /// </summary>
     class CollectionNode
     {
-        IVsUICollection coll;
+        private readonly IVsUICollection coll;
 
         public CollectionNode(IVsUICollection coll)
         {

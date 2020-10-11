@@ -20,8 +20,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private void ColumnHeaderClicked(object sender, RoutedEventArgs e)
         {
-            GridViewColumnHeader header = e.OriginalSource as GridViewColumnHeader;
-            if (header == null || header.Role == GridViewColumnHeaderRole.Padding)
+            if (!(e.OriginalSource is GridViewColumnHeader header) || header.Role == GridViewColumnHeaderRole.Padding)
             {
                 return;
             }
@@ -94,12 +93,11 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             }
 
             // If the header's column has a DisplayMemberBinding, then use that
-            Binding binding = header.Column.DisplayMemberBinding as Binding;
-            if (binding != null)
+            if (header.Column.DisplayMemberBinding is Binding binding)
             {
                 return binding.Path.Path;
             }
-            
+
             // Fall back to the header's content
             return header.ToString();
         }

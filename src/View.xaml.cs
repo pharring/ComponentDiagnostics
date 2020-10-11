@@ -62,10 +62,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 if (ShouldChangeView(newViewDescriptor))
                 {
                     // Update the new content and Dispose of the old
-                    using (IDisposable oldContent = contentHost.Content as IDisposable)
-                    {
-                        SetNewView(contentHost, newViewDescriptor, providerModel.ViewModel);
-                    }
+                    using IDisposable oldContent = contentHost.Content as IDisposable;
+                    SetNewView(contentHost, newViewDescriptor, providerModel.ViewModel);
                 }
                 else
                 {
@@ -89,9 +87,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // TODO: IVsUIElement.put_DataSource should accept any object, not just Gel datamodels.
             //       At which point, this reduces to just "currentViewElement.put_DataSource(viewModel)"
 
-            IVsUISimpleDataSource gelModel = viewModel as IVsUISimpleDataSource;
 
-            if (gelModel != null)
+            if (viewModel is IVsUISimpleDataSource gelModel)
             {
                 ErrorHandler.ThrowOnFailure(this.currentViewElement.put_DataSource(gelModel));
             }
@@ -105,8 +102,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 // the value has actually changed.
                 this.currentViewElement.put_DataSource(new EmptyDataModel());
 
-                FrameworkElement view = contentHost.Content as FrameworkElement;
-                if (view != null)
+                if (contentHost.Content is FrameworkElement view)
                 {
                     view.DataContext = viewModel;
                 }
