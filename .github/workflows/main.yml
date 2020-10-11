@@ -26,3 +26,9 @@ jobs:
         run: msbuild src /t:Restore,Build /p:Configuration=$env:Configuration /p:DeployExtension=false
         env:
           Configuration: ${{ matrix.configuration }}
+
+      - name: Upload VSIX
+        uses: actions/upload-artifact@v2
+        with:
+          name: VSIX ${{ matrix.configuration}}
+          path: **/bin/${{ matrix.Configuration }}/**/*.vsix
