@@ -34,7 +34,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         #endregion Dependency properties
 
-        List<object> _subscribedWatchers = new List<object>();
+        readonly List<object> _subscribedWatchers = new List<object>();
 
         public FileChangeServiceView()
         {

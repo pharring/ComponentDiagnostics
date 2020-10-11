@@ -23,15 +23,11 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     [ProvideComponentDiagnostics(typeof(WindowFramesDiagnosticsProvider), "Window Frames", GuidList.UiFactoryString, UIElementIds.WindowFramesView)]
     public sealed class Package : ExtensionPointAsyncPackage
     {
-        static Package _instance;
-        public static Package Instance
-        {
-            get { return _instance; }
-        }
+        public static Package Instance { get; private set; }
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            _instance = this;
+            Instance = this;
 
             await base.InitializeAsync(cancellationToken, progress);
 

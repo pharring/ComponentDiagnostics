@@ -6,8 +6,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 {
     class RegisteredProvider : Provider
     {
-        static readonly GelProperty ModelProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(Provider.ModelProp, VsUIType.Unknown, __VSUIDATAFORMAT.VSDF_BUILTIN, GetModel);
-        static readonly GelProperty VersionProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(Provider.VersionProp, VsUIType.DWord, __VSUIDATAFORMAT.VSDF_BUILTIN, GetVersion);
+#pragma warning disable IDE0052 // Remove unread private members. Property registration is necessary for Gel interop.
+        private static readonly GelProperty ModelProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(ModelProp, VsUIType.Unknown, __VSUIDATAFORMAT.VSDF_BUILTIN, GetModel);
+        private static readonly GelProperty VersionProperty = GelProperty.RegisterIndirectProperty<RegisteredProvider>(VersionProp, VsUIType.DWord, __VSUIDATAFORMAT.VSDF_BUILTIN, GetVersion);
+#pragma warning restore IDE0052 // Remove unread private members
 
         private IVsDiagnosticsProvider lazyDiagnosticsProvider;
 
@@ -18,7 +20,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
         private static object GetModel(GelDependencyObject owner)
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             RegisteredProvider me = (RegisteredProvider)owner;
             return me.Model;
         }
@@ -27,14 +29,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
-                Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return DiagnosticsProvider.DataModel;
             }
         }
 
         private static object GetVersion(GelDependencyObject owner)
         {
-            Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             RegisteredProvider me = (RegisteredProvider)owner;
             return me.Version;
         }
@@ -43,18 +45,12 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             get
             {
-                Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return DiagnosticsProvider.Version;
             }
         }
 
-        private IVsDiagnosticsProvider DiagnosticsProvider
-        {
-            get
-            {
-                return this.lazyDiagnosticsProvider ?? (this.lazyDiagnosticsProvider = VsShellUtilities.GetPackageExtensionPoint<IVsDiagnosticsProvider, IVsDiagnosticsProvider>(base.Package, base.ProviderGuid));
-            }
-        }
+        private IVsDiagnosticsProvider DiagnosticsProvider => lazyDiagnosticsProvider ??= VsShellUtilities.GetPackageExtensionPoint<IVsDiagnosticsProvider, IVsDiagnosticsProvider>(Package, ProviderGuid);
     }
 
 }

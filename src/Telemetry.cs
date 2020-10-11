@@ -10,7 +10,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 {
     internal static class Telemetry
     {
-        private const string c_InstrumentationKey = "243085e4-077a-429b-9c8c-4acf793eefaa";
+        private const string InstrumentationKey = "243085e4-077a-429b-9c8c-4acf793eefaa";
 
         public static readonly TelemetryClient Client = CreateClient();
 
@@ -18,7 +18,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             var configuration = new TelemetryConfiguration
             {
-                InstrumentationKey = c_InstrumentationKey,
+                InstrumentationKey = InstrumentationKey,
                 TelemetryChannel = new InMemoryChannel
                 {
 #if DEBUG
@@ -41,20 +41,18 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         private static byte[] GetRandomBytes(int length)
         {
             var buff = new byte[length];
-            var rnd = RandomNumberGenerator.Create();
+            using var rnd = RandomNumberGenerator.Create();
             rnd.GetBytes(buff);
             return buff;
         }
 
         private static string Anonymize(string str)
         {
-            using (var sha1 = SHA1.Create())
-            {
-                byte[] inputBytes = Encoding.Unicode.GetBytes(str);
-                byte[] hash = sha1.ComputeHash(inputBytes);
-                string base64 = Convert.ToBase64String(hash, 0, 6);
-                return base64;
-            }
+            using var sha1 = SHA1.Create();
+            byte[] inputBytes = Encoding.Unicode.GetBytes(str);
+            byte[] hash = sha1.ComputeHash(inputBytes);
+            string base64 = Convert.ToBase64String(hash, 0, 6);
+            return base64;
         }
 
         /// <summary>
@@ -65,8 +63,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         /// <returns>A dictioanry with a single key/value pair.</returns>
         public static IDictionary<string, string> CreateProperties(string key, string value)
         {
-            var retVal = new Dictionary<string,string>();
-            retVal.Add(key, value);
+            var retVal = new Dictionary<string, string>
+            {
+                { key, value }
+            };
             return retVal;
         }
     }

@@ -7,21 +7,17 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
     /// </summary>
     class RdtEvent
     {
-        static int _nextSerialNumber;
-
-        readonly int      _serialNumber;
-        readonly DateTime _time;
-        readonly string   _text;
+        private static int _nextSerialNumber;
 
         public RdtEvent (string text)
         {
-            _serialNumber = ++_nextSerialNumber;
-            _time         = DateTime.Now;
-            _text         = text;
+            SerialNumber = ++_nextSerialNumber;
+            Time         = DateTime.Now;
+            Text         = text;
         }
 
-        public int      SerialNumber    { get { return _serialNumber; } }
-        public DateTime Time            { get { return _time; } }
-        public string   Text            { get { return _text; } }
+        public int SerialNumber { get; }
+        public DateTime Time { get; }
+        public string Text { get; }
     }
 }

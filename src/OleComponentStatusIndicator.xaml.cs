@@ -26,7 +26,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             base.OnPropertyChanged(e);
         }
 
-        const double minimumScale = 0.5;
+        private const double MinimumScale = 0.5;
         static readonly DoubleAnimation growAnimation = new DoubleAnimation(1.0, new Duration(TimeSpan.FromSeconds(2.0)), FillBehavior.HoldEnd);
         static readonly DoubleAnimation shrinkAnimation = new DoubleAnimation(0.0, new Duration(TimeSpan.FromSeconds(0.33333)), FillBehavior.HoldEnd);
 
@@ -39,7 +39,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             // For very short durations, the growth animation hasn't even begun yet, so make
             // sure something is visible.
-            this.clipScale.ScaleX = Math.Max(this.clipScale.ScaleX, minimumScale);
+            this.clipScale.ScaleX = Math.Max(this.clipScale.ScaleX, MinimumScale);
 
             this.clipScale.BeginAnimation(ScaleTransform.ScaleXProperty, anim, HandoffBehavior.SnapshotAndReplace);
         }

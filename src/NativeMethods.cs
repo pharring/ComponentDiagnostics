@@ -57,10 +57,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
      
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public extern static bool IsWindowVisible(IntPtr hwnd);
+        public static extern bool IsWindowVisible(IntPtr hwnd);
 
         [DllImport("kernel32.dll")]
-        public extern static int GetCurrentThreadId();
+        public static extern int GetCurrentThreadId();
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary(string lpFileName);

@@ -5,10 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
-using Microsoft.Internal.VisualStudio.Shell.Interop;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -19,12 +17,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 {
     public class SelectionData : DependencyObject, IVsSelectionEvents, IDisposable
     {
-        const string settingsRoot = "SelectionMonitorTool";
-        const string noNameProvided = "No name provided";
-
-        Dictionary<uint, UIContextInformation> contextIDNames = new Dictionary<uint, UIContextInformation>();
-
-        uint selectionEventsCookie = VSConstants.VSCOOKIE_NIL;
+        private const string SettingsRoot = "SelectionMonitorTool";
+        private const string NoNameProvided = "No name provided";
+        private readonly Dictionary<uint, UIContextInformation> contextIDNames = new Dictionary<uint, UIContextInformation>();
+        private readonly uint selectionEventsCookie = VSConstants.VSCOOKIE_NIL;
 
         private static readonly bool IsRunningOnDev12 = InitializeIsRunningOnDev12();
 
@@ -37,8 +33,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             try
             {
                 Guid IID_IVsShell6 = new Guid("D111DB4B-584E-4F93-BCEC-5F7E0990E9E7");
-                IntPtr punkShell6;
-                if (Marshal.QueryInterface(punk, ref IID_IVsShell6, out punkShell6) == VSConstants.S_OK)
+                if (Marshal.QueryInterface(punk, ref IID_IVsShell6, out var punkShell6) == VSConstants.S_OK)
                 {
                     Marshal.Release(punkShell6);
                     return true;
@@ -52,24 +47,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             return false;
         }
 
+        public ObservableCollection<UIContextInformation> LiveContexts { get; } = new ObservableCollection<UIContextInformation>();
+        public ObservableCollection<UIContextInformation> FavoriteContexts { get; } = new ObservableCollection<UIContextInformation>();
+        public ObservableCollection<UIContextLogItem> UIContextLog { get; } = new ObservableCollection<UIContextLogItem>();
+        public ObservableCollection<SelectionLogItem> SelectionLog { get; } = new ObservableCollection<SelectionLogItem>();
+        public ObservableCollection<SelectionItemInfo> SelectionItems { get; } = new ObservableCollection<SelectionItemInfo>();
 
-        private ObservableCollection<UIContextInformation> liveContexts = new ObservableCollection<UIContextInformation>();
-        public ObservableCollection<UIContextInformation> LiveContexts { get { return liveContexts; } }
-
-        private ObservableCollection<UIContextInformation> favoriteContexts = new ObservableCollection<UIContextInformation>();
-        public ObservableCollection<UIContextInformation> FavoriteContexts { get { return favoriteContexts; } }
-
-        private ObservableCollection<UIContextLogItem> uiContextLog = new ObservableCollection<UIContextLogItem>();
-        public ObservableCollection<UIContextLogItem> UIContextLog { get { return uiContextLog; } }
-
-        private ObservableCollection<SelectionLogItem> selectionLog = new ObservableCollection<SelectionLogItem>();
-        public ObservableCollection<SelectionLogItem> SelectionLog { get { return selectionLog; } }
-
-        private ObservableCollection<SelectionItemInfo> selectionItems = new ObservableCollection<SelectionItemInfo>();
-        public ObservableCollection<SelectionItemInfo> SelectionItems { get { return selectionItems; } }
-
-
-        private IVsMonitorSelection selectionMonitor;
+        private readonly IVsMonitorSelection selectionMonitor;
         internal SelectionData()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -78,18 +62,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             InitializeSelectionItems();
             InitializeContextDictionary();
 
-            IVsSettingsStore settingsStore;
             IVsSettingsManager userSettings = Package.GetGlobalService(typeof(SVsSettingsManager)) as IVsSettingsManager;
-            userSettings.GetReadOnlySettingsStore((uint)__VsSettingsScope.SettingsScope_UserSettings, out settingsStore);
+            userSettings.GetReadOnlySettingsStore((uint)__VsSettingsScope.SettingsScope_UserSettings, out var settingsStore);
 
-            LoadContextIDList(settingsStore, favoriteContexts, "Favorites");
+            LoadContextIDList(settingsStore, FavoriteContexts, "Favorites");
 
             // at the point where we are created, we don't know what contexts are live so we need to look
             // for all of them that we know about.
             foreach (uint contextID in contextIDNames.Keys)
             {
-                int active;
-                if (ErrorHandler.Succeeded(selectionMonitor.IsCmdUIContextActive(contextID, out active)) && active != 0)
+                if (ErrorHandler.Succeeded(selectionMonitor.IsCmdUIContextActive(contextID, out var active)) && active != 0)
                 {
                     // Add the item to the live contexts
 
@@ -111,7 +93,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            string collectionRoot = settingsRoot + "\\" + name;
+            string collectionRoot = SettingsRoot + "\\" + name;
 
             // rewrite the collection
             settingsStore.DeleteCollection(collectionRoot);
@@ -133,23 +115,19 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         private void LoadContextIDList(IVsSettingsStore settingsStore, ObservableCollection<UIContextInformation> list, string name)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string collectionRoot = settingsRoot + "\\" + name;
+            string collectionRoot = SettingsRoot + "\\" + name;
 
-            int exists;
-            settingsStore.CollectionExists(collectionRoot, out exists);
+            settingsStore.CollectionExists(collectionRoot, out var exists);
             if (exists != 0)
             {
-                uint contextCount;
 
-                settingsStore.GetPropertyCount(collectionRoot, out contextCount);
+                settingsStore.GetPropertyCount(collectionRoot, out var contextCount);
                 for (uint iContext = 0; iContext < contextCount; iContext++)
                 {
-                    string guidString;
-                    if (ErrorHandler.Succeeded(settingsStore.GetPropertyName(collectionRoot, iContext, out guidString)))
+                    if (ErrorHandler.Succeeded(settingsStore.GetPropertyName(collectionRoot, iContext, out var guidString)))
                     {
                         Guid contextGuid = new Guid(guidString);
-                        uint contextID;
-                        if (ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out contextID)))
+                        if (ErrorHandler.Succeeded(selectionMonitor.GetCmdUIContextCookie(ref contextGuid, out var contextID)))
                         {
                             if (contextIDNames.ContainsKey(contextID))
                             {
@@ -158,8 +136,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                                     contextIDNames[contextID].Name.StartsWith("resource="))
                                 {
                                     // if the name is a resource, use the name we found from the last session
-                                    string contextName;
-                                    if (ErrorHandler.Succeeded(settingsStore.GetString(collectionRoot, guidString, out contextName)))
+                                    if (ErrorHandler.Succeeded(settingsStore.GetString(collectionRoot, guidString, out var contextName)))
                                     {
                                         contextIDNames[contextID].Name = contextName;
                                     }
@@ -188,7 +165,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     contextIDNames[guidCookie] = new UIContextInformation(guidCookie, contextName, contextGuid.ToString("B"), packageGuidString);
                 else
                 {
-                    if (info.Name == noNameProvided)
+                    if (info.Name == NoNameProvided)
                         info.Name = contextName;
                 }
             }
@@ -229,24 +206,20 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             string elementName;
 
             // Initialize the current selection objects
-            IntPtr pHierarchy;
             IVsHierarchy hierarchy = null;
-            uint itemID;
-            IVsMultiItemSelect multiSelect;
-            IntPtr pSelectionContainer;
             ISelectionContainer selectionContainer = null;
 
-            selectionMonitor.GetCurrentSelection(out pHierarchy, out itemID, out multiSelect, out pSelectionContainer);
+            selectionMonitor.GetCurrentSelection(out var pHierarchy, out var itemID, out var multiSelect, out var pSelectionContainer);
             if (pHierarchy != IntPtr.Zero)
                 hierarchy = Marshal.GetObjectForIUnknown(pHierarchy) as IVsHierarchy;
             if (pSelectionContainer != IntPtr.Zero)
                 selectionContainer = Marshal.GetObjectForIUnknown(pSelectionContainer) as ISelectionContainer;
 
             // Sync descriptions with selection by calling OnSelectionChanged
-            selectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.Hierarchy, description:String.Empty, owner:String.Empty));
-            selectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.ItemID, description: String.Empty, owner: String.Empty));
-            selectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.SelectionContainer, description: String.Empty, owner: String.Empty));
-            selectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.MultiItemSelect, description: String.Empty, owner: String.Empty));
+            SelectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.Hierarchy, description: string.Empty, owner: string.Empty));
+            SelectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.ItemID, description: string.Empty, owner: string.Empty));
+            SelectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.SelectionContainer, description: string.Empty, owner: string.Empty));
+            SelectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)SelectionItemInfo.SpecialElement.MultiItemSelect, description: string.Empty, owner: string.Empty));
 
             OnSelectionChanged(null, 0, null, null, hierarchy, itemID, multiSelect, selectionContainer);
 
@@ -265,7 +238,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 selectionMonitor.GetCurrentElementValue((uint)element, out elementValue);
                 object valueOwner = GetOwnerForSelectedElement(element);
-                selectionItems.Add(new SelectionItemInfo(element, GetSelectionElementDescription(elementValue), GetSelectionElementDescription(valueOwner)));
+                SelectionItems.Add(new SelectionItemInfo(element, GetSelectionElementDescription(elementValue), GetSelectionElementDescription(valueOwner)));
             }
 
             // Read the VSIP registered selection elements
@@ -274,34 +247,27 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             Guid surfaceSelectionElement = new Guid("{64db9e55-5614-44b3-93c9-e617b95eeb5f}");
 
             IVsMonitorSelection2 selectionMonitor2 = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection2;
-            using (RegistryKey rootKey = GetRegistryRoot())
+            using RegistryKey rootKey = GetRegistryRoot();
+            using RegistryKey elementsKey = rootKey.OpenSubKey("SelectionElements");
+            if (elementsKey != null)
             {
-                using (RegistryKey elementsKey = rootKey.OpenSubKey("SelectionElements"))
+                string[] elementGuids = elementsKey.GetSubKeyNames();
+                foreach (string guidString in elementGuids)
                 {
-                    if (elementsKey != null)
-                    {
-                        string[] elementGuids = elementsKey.GetSubKeyNames();
-                        foreach (string guidString in elementGuids)
-                        {
-                            using (RegistryKey elementKey = elementsKey.OpenSubKey(guidString))
-                            {
-                                Guid elementGuid = new Guid(guidString);
-                                uint selElem;
-                                selectionMonitor2.GetElementID(ref elementGuid, out selElem);
+                    using RegistryKey elementKey = elementsKey.OpenSubKey(guidString);
+                    Guid elementGuid = new Guid(guidString);
+                    selectionMonitor2.GetElementID(ref elementGuid, out var selElem);
 
-                                selectionMonitor.GetCurrentElementValue(selElem, out elementValue);
-                                elementName = (string)elementKey.GetValue("Name", defaultValue: String.Empty);
+                    selectionMonitor.GetCurrentElementValue(selElem, out elementValue);
+                    elementName = (string)elementKey.GetValue("Name", defaultValue: string.Empty);
 
-                                // Skip this one, it is not supported yet and will always be empty
-                                if (elementGuid == surfaceSelectionElement)
-                                    continue;
+                    // Skip this one, it is not supported yet and will always be empty
+                    if (elementGuid == surfaceSelectionElement)
+                        continue;
 
-                                object contextOwner = GetOwnerForSelectedElement((VSConstants.SelectionElement)selElem);
+                    object contextOwner = GetOwnerForSelectedElement((VSConstants.SelectionElement)selElem);
 
-                                selectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)selElem, elementName, GetSelectionElementDescription(elementValue), GetSelectionElementDescription(contextOwner)));
-                            }
-                        }
-                    }
+                    SelectionItems.Add(new SelectionItemInfo((VSConstants.SelectionElement)selElem, elementName, GetSelectionElementDescription(elementValue), GetSelectionElementDescription(contextOwner)));
                 }
             }
         }
@@ -311,8 +277,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             ThreadHelper.ThrowIfNotOnUIThread();
             Validate.IsNotNull(selCtx, "selCtx");
             IVsMonitorSelection2 monitorSelection2 = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection2;
-            IVsTrackSelectionEx emptySelCtxt;
-            monitorSelection2.GetEmptySelectionContext(out emptySelCtxt);
+            monitorSelection2.GetEmptySelectionContext(out var emptySelCtxt);
             return ComUtilities.IsSameComObject(selCtx, emptySelCtxt);
         }
 
@@ -356,14 +321,12 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // to find its owner.
 
             IVsTrackSelectionEx hierarchySelCtx = null;
-            IVsTrackSelectionEx selectionContainerCtx;
-
             if (IsRunningOnDev12)
             {
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
                 if (selectionMonitorPrivate != null)
                 {
-                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out _);
                 }
             }
             else
@@ -371,7 +334,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
                 if (selectionMonitorPrivate != null)
                 {
-                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out _);
                 }
             }
 
@@ -388,7 +351,6 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // Get the selection context object for propagator of the element
             // Enumerate the frames and compare their context to the propagator
             // to find its owner.
-            IVsTrackSelectionEx hierarchySelCtx;
             IVsTrackSelectionEx selectionContainerCtx = null;
 
             if (IsRunningOnDev12)
@@ -396,7 +358,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev12.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
                 if (selectionMonitorPrivate != null)
                 {
-                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                    selectionMonitorPrivate.GetContextOfSelection(out _, out selectionContainerCtx);
                 }
             }
             else
@@ -404,7 +366,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 var selectionMonitorPrivate = (Microsoft.Internal.VisualStudio.Shell.Interop.Dev11.IVsMonitorSelectionExPrivate)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
                 if (selectionMonitorPrivate != null)
                 {
-                    selectionMonitorPrivate.GetContextOfSelection(out hierarchySelCtx, out selectionContainerCtx);
+                    selectionMonitorPrivate.GetContextOfSelection(out _, out selectionContainerCtx);
                 }
             }
 
@@ -430,18 +392,16 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             if (IsEmptySelectionContext(selCtx))
                 return selCtx;
 
-            IEnumWindowFrames frameEnum;
             IVsUIShell4 shell4 = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell4;
-            
+
             Guid trackSelectionExServiceGuid = typeof(SVsTrackSelectionEx).GUID;
             Guid trackSelecitonExGuid = typeof(IVsTrackSelectionEx).GUID;
 
-            shell4.GetWindowEnum((uint)__WindowFrameTypeFlags.WINDOWFRAMETYPE_All, out frameEnum);
+            shell4.GetWindowEnum((uint)__WindowFrameTypeFlags.WINDOWFRAMETYPE_All, out var frameEnum);
 
             foreach (IVsWindowFrame frame in ComUtilities.EnumerableFrom(frameEnum))
             {
-                object frameServiceProvider;
-                if (ErrorHandler.Succeeded(frame.GetProperty((int)__VSFPROPID.VSFPROPID_SPFrame, out frameServiceProvider)) && frameServiceProvider != null)
+                if (ErrorHandler.Succeeded(frame.GetProperty((int)__VSFPROPID.VSFPROPID_SPFrame, out var frameServiceProvider)) && frameServiceProvider != null)
                 {
                     IntPtr pTrackSelection = IntPtr.Zero;
                     try
@@ -472,26 +432,24 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         void InitializeContextDictionary()
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            using (RegistryKey rootKey = GetRegistryRoot())
-            {
-                AddStockContexts();
-                AddLanguageServices(rootKey);
+            using RegistryKey rootKey = GetRegistryRoot();
+            AddStockContexts();
+            AddLanguageServices(rootKey);
 
-                AddRegisteredGuids(rootKey, "Packages", "ProductName");
-                AddRegisteredGuids(rootKey, "ToolWindows", "Name");
-                AddRegisteredGuids(rootKey, "Services", "Name");
-                AddRegisteredGuids(rootKey, "Editors", "DisplayName");
-                AddRegisteredGuids(rootKey, "SourceControlProviders", null);
-                AddRegisteredGuids(rootKey, "AD7Metrics\\Engine", "Name");
-                AddRegisteredGuids(rootKey, "AD7Metrics(Debug)\\Engine", "Name");
-                AddRegisteredGuids(rootKey, "DataProviders", null);
-                AddRegisteredGuids(rootKey, "DataSources", null);
-                AddRegisteredGuids(rootKey, "Projects", null);
-                AddRegisteredGuids(rootKey, "UIContextRules", null);
+            AddRegisteredGuids(rootKey, "Packages", "ProductName");
+            AddRegisteredGuids(rootKey, "ToolWindows", "Name");
+            AddRegisteredGuids(rootKey, "Services", "Name");
+            AddRegisteredGuids(rootKey, "Editors", "DisplayName");
+            AddRegisteredGuids(rootKey, "SourceControlProviders", null);
+            AddRegisteredGuids(rootKey, "AD7Metrics\\Engine", "Name");
+            AddRegisteredGuids(rootKey, "AD7Metrics(Debug)\\Engine", "Name");
+            AddRegisteredGuids(rootKey, "DataProviders", null);
+            AddRegisteredGuids(rootKey, "DataSources", null);
+            AddRegisteredGuids(rootKey, "Projects", null);
+            AddRegisteredGuids(rootKey, "UIContextRules", null);
 
-                // need package resource lookup?
-                AddRegisteredGuids(rootKey, "KeyBindingTables", null);
-            }
+            // need package resource lookup?
+            AddRegisteredGuids(rootKey, "KeyBindingTables", null);
         }
 
         /// <summary>
@@ -501,36 +459,32 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         void AddLanguageServices(RegistryKey rootKey)
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            using (RegistryKey languagesKey = rootKey.OpenSubKey("Languages\\Language Services"))
+            using RegistryKey languagesKey = rootKey.OpenSubKey("Languages\\Language Services");
+            foreach (string keyName in languagesKey.GetSubKeyNames())
             {
-                foreach (string keyName in languagesKey.GetSubKeyNames())
+                using RegistryKey languageService = languagesKey.OpenSubKey(keyName);
+                string contextGuidString = (string)languageService.GetValue(null);
+                if (string.IsNullOrEmpty(contextGuidString)) continue;
+
+                string name = keyName;
+                string packageGuidString = string.Empty;
+
+                if (languageService.GetValueNames().Contains("LangResID"))
                 {
-                    using (RegistryKey languageService = languagesKey.OpenSubKey(keyName))
+                    packageGuidString = (string)languageService.GetValue("Package");
+                    if (!string.IsNullOrEmpty(packageGuidString))
                     {
-                        string contextGuidString = (string)languageService.GetValue(null);
-                        if (string.IsNullOrEmpty(contextGuidString)) continue;
+                        int resID = (int)languageService.GetValue("LangResID");
 
-                        string name = keyName;
-                        string packageGuidString = String.Empty;
-
-                        if (languageService.GetValueNames().Contains("LangResID"))
-                        {
-                            packageGuidString = (string)languageService.GetValue("Package");
-                            if (!string.IsNullOrEmpty(packageGuidString))
-                            {
-                                int resID = (int)languageService.GetValue("LangResID");
-
-                                name = "#" + resID.ToString();
-                            }
-                            else
-                            {
-                                name = keyName;
-                            }
-                        }
-
-                        AddContextName(contextGuidString, name, packageGuidString);
+                        name = "#" + resID.ToString();
+                    }
+                    else
+                    {
+                        name = keyName;
                     }
                 }
+
+                AddContextName(contextGuidString, name, packageGuidString);
             }
         }
 
@@ -546,38 +500,34 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         {
             Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-            using (RegistryKey listKey = rootKey.OpenSubKey(keyList))
+            using RegistryKey listKey = rootKey.OpenSubKey(keyList);
+            if (listKey != null)
             {
-                if (listKey != null)
+                foreach (string contextGuidString in listKey.GetSubKeyNames())
                 {
-                    foreach (string contextGuidString in listKey.GetSubKeyNames())
+                    using RegistryKey itemKey = listKey.OpenSubKey(contextGuidString);
+                    string contextName = itemKey.GetValue(nameKey) as string;
+                    string packageGuidString = itemKey.GetValue("Package") as string;
+
+                    // Try the default value
+                    if (string.IsNullOrEmpty(contextName))
                     {
-                        using (RegistryKey itemKey = listKey.OpenSubKey(contextGuidString))
-                        {
-                            string contextName = itemKey.GetValue(nameKey) as string;
-                            string packageGuidString = itemKey.GetValue("Package") as string;
+                        contextName = itemKey.GetValue(null) as string;
+                    }
 
-                            // Try the default value
-                            if (string.IsNullOrEmpty(contextName))
-                            {
-                                contextName = itemKey.GetValue(null) as string;
-                            }
+                    // No name provided
+                    if (string.IsNullOrEmpty(contextName))
+                    {
+                        contextName = NoNameProvided;
+                    }
 
-                            // No name provided
-                            if (string.IsNullOrEmpty(contextName))
-                            {
-                                contextName = noNameProvided;
-                            }
-
-                            try
-                            {
-                                AddContextName(contextGuidString, contextName, packageGuidString);
-                            }
-                            catch (FormatException)
-                            {
-                                // ignore bad guids
-                            }
-                        }
+                    try
+                    {
+                        AddContextName(contextGuidString, contextName, packageGuidString);
+                    }
+                    catch (FormatException)
+                    {
+                        // ignore bad guids
                     }
                 }
             }
@@ -668,10 +618,9 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     {
                         if (ci.Name.StartsWith("#"))
                         {
-                            string newName;
                             Guid packageGuid = new Guid(ci.Package);
                             IVsResourceManager resources = Package.GetGlobalService(typeof(SVsResourceManager)) as IVsResourceManager;
-                            if (ErrorHandler.Succeeded(resources.LoadResourceString(ref packageGuid, 0, ci.Name, out newName)))
+                            if (ErrorHandler.Succeeded(resources.LoadResourceString(ref packageGuid, 0, ci.Name, out var newName)))
                                 ci.Name = newName;
                             // Also try without the "#" in the name
                             else if (ErrorHandler.Succeeded(resources.LoadResourceString(ref packageGuid, 0, ci.Name.Substring(1), out newName)))
@@ -686,8 +635,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                         int resourceIDPosition = ci.Name.IndexOf('#');
                         string resourceIDString = ci.Name.Substring(resourceIDPosition);
                         string resourceDLL = ci.Name.Substring("resource=".Length, ci.Name.Length - resourceIDPosition);
-                        uint resourceID = 0;
-                        if (uint.TryParse(resourceIDString.Substring(1), out resourceID))
+                        if (uint.TryParse(resourceIDString.Substring(1), out var resourceID))
                         {
                             if (!string.IsNullOrEmpty(resourceDLL))
                             {
@@ -719,13 +667,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                     ci.Enabled = false;
                 }
 
-                uiContextLog.Insert(0, new UIContextLogItem(fActive == 1, ci));
+                UIContextLog.Insert(0, new UIContextLogItem(fActive == 1, ci));
             }
             else
             {
-                UIContextInformation ci = new UIContextInformation(dwCmdUICookie, "No name found", "Unknown", String.Empty);
+                UIContextInformation ci = new UIContextInformation(dwCmdUICookie, "No name found", "Unknown", string.Empty);
                 contextIDNames.Add(dwCmdUICookie, ci);
-                uiContextLog.Insert(0, new UIContextLogItem(fActive == 1, ci));
+                UIContextLog.Insert(0, new UIContextLogItem(fActive == 1, ci));
             }
 
             return VSConstants.S_OK;
@@ -743,34 +691,27 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             if (element == null)
                 return "null";
 
-            IVsDiagnosticsItem diagnosticItem = element as IVsDiagnosticsItem;
-            if (diagnosticItem != null)
+            if (element is IVsDiagnosticsItem diagnosticItem)
             {
                 return diagnosticItem.DiagnosticsName;
             }
-            
-            IVsWindowFrame frame = element as IVsWindowFrame;
-            if (frame != null)
+
+            if (element is IVsWindowFrame frame)
             {
-                object var;
-                frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out var);
+                frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out var var);
                 return string.Format("IVsWindowFrame: {0}", var as string);
             }
 
-            IVsUserContext userContext = element as IVsUserContext;
-            if (userContext != null)
+            if (element is IVsUserContext userContext)
             {
                 // Enumerate all attributes looking for a F1 keyword, 
-                string keyword = String.Empty;
-                int count;
-                userContext.CountAttributes("keyword", 1 /*true*/, out count);
+                string keyword = string.Empty;
+                userContext.CountAttributes("keyword", 1 /*true*/, out var count);
                 for (int index = 0; index < count; index++)
                 {
-                    string name;
-                    string value;
                     VSUSERCONTEXTATTRIBUTEUSAGE[] usage = new VSUSERCONTEXTATTRIBUTEUSAGE[1];
 
-                    userContext.GetAttribute(index, "keyword", 1 /*true*/, out name, out value);
+                    userContext.GetAttribute(index, "keyword", 1 /*true*/, out var name, out var value);
                     userContext.GetAttrUsage(index, 1 /*true*/, usage);
 
                     keyword = string.Format("{0}={1}", name, value);
@@ -783,39 +724,29 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 return string.Format("IVsUserContext: {0}", keyword);
             }
 
-            if (element is string)
+            if (element is string stringValue)
             {
-                return (string)element;
+                return stringValue;
             }
 
-            IVsHierarchy hierarchy = element as IVsHierarchy;
-            if (hierarchy != null)
+            if (element is IVsHierarchy hierarchy)
             {
-                object var;
-                if (ErrorHandler.Succeeded(hierarchy.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ProjectName, out var)) && var is string)
+                if (ErrorHandler.Succeeded(hierarchy.GetProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ProjectName, out var var)) && var is string)
                     return string.Format("IVsHierarchy: {0}", var as string);
             }
 
-            IOleUndoManager pUndo = element as IOleUndoManager;
-            if (pUndo != null)
+            if (element is IOleUndoManager)
             {
                 return "IOleUndoManager";
             }
 
-            IVsFindTarget pFind = element as IVsFindTarget;
-            if (pFind != null)
+            if (element is IVsFindTarget pFind)
             {
-                IVsWindowFrame findTargetFrame;
-                string caption = String.Empty;
-
-                object varFrame;
-                pFind.GetProperty((uint)__VSFTPROPID.VSFTPROPID_WindowFrame, out varFrame);
-                findTargetFrame = varFrame as IVsWindowFrame;
-
-                if (frame != null)
+                string caption = string.Empty;
+                pFind.GetProperty((uint)__VSFTPROPID.VSFTPROPID_WindowFrame, out var varFrame);
+                if (varFrame is IVsWindowFrame findTargetFrame)
                 {
-                    object varCaption;
-                    frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out varCaption);
+                    findTargetFrame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out var varCaption);
                     caption = varCaption as string;
                 }
 
@@ -853,10 +784,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             // If document, get its editor, physical view, logical view, interigate object types, impl etc...
 
             object valueOwner = GetOwnerForSelectedElement((VSConstants.SelectionElement)elementid);
-            string valueOwnerDescription = (valueOwner != null) ? GetSelectionElementDescription(valueOwner) : String.Empty;
+            string valueOwnerDescription = (valueOwner != null) ? GetSelectionElementDescription(valueOwner) : string.Empty;
 
             if (varValueOld != null)
-                SelectionLog.Insert(0, new SelectionLogItem(false, (VSConstants.SelectionElement)elementid, GetSelectionElementDescription(varValueOld), String.Empty));
+                SelectionLog.Insert(0, new SelectionLogItem(false, (VSConstants.SelectionElement)elementid, GetSelectionElementDescription(varValueOld), string.Empty));
 
             if (varValueNew != null)
                 SelectionLog.Insert(0, new SelectionLogItem(true, (VSConstants.SelectionElement)elementid, GetSelectionElementDescription(varValueNew), valueOwnerDescription));
@@ -872,15 +803,14 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             {
                 // Changes to LastWindowFrame do not cause change notification however it does change every time WinodwFrame
                 // changes so we will retrieve the new value here.  We will not know the old value.
-                object varLastWindowFrame = null;
-                selectionMonitor.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_LastWindowFrame, out varLastWindowFrame);
+                selectionMonitor.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_LastWindowFrame, out var varLastWindowFrame);
                 if (varLastWindowFrame != null)
                 {
                     item = SelectionItems.First(e => e.SelElemID == (VSConstants.SelectionElement)VSConstants.VSSELELEMID.SEID_LastWindowFrame);
                     if (item != null)
                     {
                         item.Description = GetSelectionElementDescription(varLastWindowFrame);
-                        item.ContextOwner = String.Empty;  // No one owns this context
+                        item.ContextOwner = string.Empty;  // No one owns this context
                     }
                 }
             }
@@ -888,21 +818,13 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             return VSConstants.S_OK;
         }
 
-        string GetItemIDName(uint itemid)
+        string GetItemIDName(uint itemid) => itemid switch
         {
-            switch (itemid)
-            {
-                case (uint)VSConstants.VSITEMID.Nil:
-                    return "Nil";
-                case (uint)VSConstants.VSITEMID.Root:
-                    return "Root";
-                case (uint)VSConstants.VSITEMID.Selection:
-                    return "Selection";
-                default:
-                    return string.Format("0x{0}", itemid.ToString("X"));
-            }
-
-        }
+            (uint)VSConstants.VSITEMID.Nil => "Nil",
+            (uint)VSConstants.VSITEMID.Root => "Root",
+            (uint)VSConstants.VSITEMID.Selection => "Selection",
+            _ => string.Format("0x{0}", itemid.ToString("X")),
+        };
 
 
 
@@ -911,8 +833,8 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             ThreadHelper.ThrowIfNotOnUIThread();
             object hierarchyOwner = GetOwnerForSelectedHierarchy();
             object selectionContainerOwner = GetOwnerForSelectedSelectionContainer();
-            string hierarchyOwnerDescription = (hierarchyOwner != null) ? GetSelectionElementDescription(hierarchyOwner) : String.Empty;
-            string selectionContainerOwnerDescription = (selectionContainerOwner != null) ? GetSelectionElementDescription(selectionContainerOwner) : String.Empty;
+            string hierarchyOwnerDescription = (hierarchyOwner != null) ? GetSelectionElementDescription(hierarchyOwner) : string.Empty;
+            string selectionContainerOwnerDescription = (selectionContainerOwner != null) ? GetSelectionElementDescription(selectionContainerOwner) : string.Empty;
 
             string newItemDescription = GetSelectionElementDescription(pHierNew);
             string oldItemDescription = GetSelectionElementDescription(pHierOld);
@@ -951,9 +873,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             newItemDescription = null;
             if (pMISNew != null)
             {
-                uint itemCount;
-                int singleHierarchy;
-                pMISNew.GetSelectionInfo(out itemCount, out singleHierarchy);
+                pMISNew.GetSelectionInfo(out var itemCount, out _);
 
                 StringBuilder description = new StringBuilder(string.Format("MultiSelect ({0})", itemCount));
                 if (itemCount > 0)
@@ -991,8 +911,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             newItemDescription = null;
             if (pSCNew != null)
             {
-                uint itemCount;
-                pSCNew.CountObjects((uint)Microsoft.VisualStudio.Shell.Interop.Constants.GETOBJS_ALL, out itemCount);
+                pSCNew.CountObjects((uint)Microsoft.VisualStudio.Shell.Interop.Constants.GETOBJS_ALL, out var itemCount);
 
                 StringBuilder description = new StringBuilder(string.Format("Properties ({0})", itemCount));
                 if (itemCount > 0)
@@ -1024,7 +943,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         void LogSelectionChange(uint selElem, string oldItemDescription, string newItemDescription, string newItemOwnerDescription)
         {
             if (oldItemDescription != null)
-                SelectionLog.Insert(0, new SelectionLogItem(false, (VSConstants.SelectionElement)selElem, oldItemDescription, String.Empty));
+                SelectionLog.Insert(0, new SelectionLogItem(false, (VSConstants.SelectionElement)selElem, oldItemDescription, string.Empty));
 
             SelectionLog.Insert(0, new SelectionLogItem(true, (VSConstants.SelectionElement)selElem, newItemDescription, newItemOwnerDescription));
         }
@@ -1052,11 +971,10 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
             ThreadHelper.ThrowIfNotOnUIThread();
             selectionMonitor.UnadviseSelectionEvents(selectionEventsCookie);
 
-            IVsWritableSettingsStore settingsStore;
             IVsSettingsManager userSettings = Package.GetGlobalService(typeof(SVsSettingsManager)) as IVsSettingsManager;
-            userSettings.GetWritableSettingsStore((uint)__VsSettingsScope.SettingsScope_UserSettings, out settingsStore);
+            userSettings.GetWritableSettingsStore((uint)__VsSettingsScope.SettingsScope_UserSettings, out var settingsStore);
 
-            SaveContextIDList(settingsStore, favoriteContexts, "Favorites");
+            SaveContextIDList(settingsStore, FavoriteContexts, "Favorites");
         }
     }
 }

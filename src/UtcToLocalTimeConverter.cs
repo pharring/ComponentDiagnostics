@@ -8,8 +8,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         protected override string Convert(DateTime value, object parameter, System.Globalization.CultureInfo culture)
         {
             DateTime localTime = value.ToLocalTime();
-            string format = parameter as string;
-            return (format == null) ? localTime.ToString(culture) : localTime.ToString(format, culture);
+            return (!(parameter is string format)) ? localTime.ToString(culture) : localTime.ToString(format, culture);
         }
     }
 }

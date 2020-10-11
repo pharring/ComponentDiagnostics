@@ -91,8 +91,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
         IEnumerable<string> GetSubKeys(string path)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            uint subCollectionCount;
-            int hr = this.Store.GetSubCollectionCount(path, out subCollectionCount);
+            int hr = this.Store.GetSubCollectionCount(path, out var subCollectionCount);
             if (hr == VSConstants.E_INVALIDARG)
             {
                 // Return an empty collection if the sub-collection is missing entirely
@@ -105,8 +104,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             for (uint i = 0; i != subCollectionCount; ++i)
             {
-                string subCollectionName;
-                ErrorHandler.ThrowOnFailure(this.Store.GetSubCollectionName(path, i, out subCollectionName));
+                ErrorHandler.ThrowOnFailure(this.Store.GetSubCollectionName(path, i, out var subCollectionName));
 
                 yield return subCollectionName;
             }
@@ -131,8 +129,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
 
             string versionedViewPath = viewsPath + "\\" + versionName;
 
-            string viewFactory;
-            if (ErrorHandler.Failed(this.Store.GetString(versionedViewPath, "ViewFactory", out viewFactory)))
+            if (ErrorHandler.Failed(this.Store.GetString(versionedViewPath, "ViewFactory", out var viewFactory)))
             {
                 // ViewFactory is optional (we'll use a generic view), so this isn't an error.
             }
@@ -186,8 +183,7 @@ namespace Microsoft.VisualStudio.ComponentDiagnostics
                 yield break;
             }
 
-            string packageString;
-            if (ErrorHandler.Failed(this.Store.GetString(fullProviderPath, "Package", out packageString)))
+            if (ErrorHandler.Failed(this.Store.GetString(fullProviderPath, "Package", out var packageString)))
             {
                 Debug.WriteLine("WARNING: Diagnostics provider '{0}' has an invalid or missing package", providerPath);
                 yield break;
