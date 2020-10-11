@@ -1,5 +1,4 @@
-# ComponentDiagnostics
-Explore internal real-time diagnostics from the running IDE
+### Explore internal Visual Studio diagnostics in real-time!
 
 ## Getting Started
 
@@ -34,3 +33,5 @@ Note that the UI is more functional than beautiful. It's meant to be developer-l
 The Component Diagnostics feature is extensible, so components can add their own diagnostics providers and, moreover, they can replace the default property grid view with customized UI. For information on Component Diagnostics extensibility, see the IVsDiagnosticsProvider documentation.
 
 If you are creating an extension for Visual Studio and you need help exposing your own diagnostics in this tool window, please enter an [issue](https://github.com/pharring/ComponentDiagnostics/issues) in GitHub and we'll try to help.
+
+Bugs? Questions? Feature suggestions? Please [open an issue in GitHub](https://github.com/pharring/ComponentDiagnostics/issues).

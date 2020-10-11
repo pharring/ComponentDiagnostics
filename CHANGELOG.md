@@ -1,7 +1,7 @@
 # Component Diagnostics
 All notable changes will be documented in this file.
 
-## Version vNEXT
+## Version 1.20.1010.0 (October 10th 2020)
 ### Changed
 - Migrated source code to GitHub.
 
