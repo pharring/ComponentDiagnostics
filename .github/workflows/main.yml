@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: VSIX ${{ matrix.configuration}}
-          path: **/bin/${{ matrix.Configuration }}/**/*.vsix
+          path: **/bin/**/*.vsix
