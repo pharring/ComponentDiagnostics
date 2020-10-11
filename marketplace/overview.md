@@ -1,17 +1,11 @@
 # ComponentDiagnostics
-A Visual Studio Extension to explore internal real-time diagnostics from the running IDE
-
-[![Visual Studio Marketplace](http://vsmarketplacebadge.apphb.com/version/PaulHarrington.ComponentDiagnostics.svg)](https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics)
-[![Visual Studio Marketplace Rating](http://vsmarketplacebadge.apphb.com/rating-star/PaulHarrington.ComponentDiagnostics.svg)](https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics)
-[![Visual Studio Marketplace Downloads](http://vsmarketplacebadge.apphb.com/downloads-short/PaulHarrington.ComponentDiagnostics.svg)](https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics)
+Explore internal real-time diagnostics from the running IDE
 
 ## Getting Started
 
-[Download](https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics) and run the extension (VSIX) for Visual Studio 2019 from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=PaulHarrington.ComponentDiagnostics) or, from within Visual Studio, search for "Component Diagnostics" in the "Managed Extensions" UI.
+Select the "Component Diagnostics" command from the "Help" menu to bring up the diagnostics tool window.
 
-Once installed, select the "Component Diagnostics" command from the "Help" menu to bring up the diagnostics tool window.
-
-![ComponentDiagnosticsToolWindowScreenshot](marketplace/images/Screenshot_Toolwindow.png)
+![ComponentDiagnosticsToolWindowScreenshot](images/Screenshot_Toolwindow.png)
 
 The Component Diagnostics tool window is divided into two panes. In the left hand pane is a list of all the registered diagnostics providers. New providers may be added in the future and other (non-Microsoft) extensions are free to add their own diagnostics providers to this list. The right hand pane shows the diagnostic information from the selected provider. Some views are just a property grid or a tree view over a simple data model. This is the minimal, default view for a diagnostic provider. Other providers include more advanced viewers to better visualize the internal workings of the selected component.
 
