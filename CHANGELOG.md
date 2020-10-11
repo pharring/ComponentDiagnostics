@@ -1,6 +1,21 @@
 # Component Diagnostics
 All notable changes will be documented in this file.
 
+## Version vNEXT
+### Changed
+- Migrated source code to GitHub.
+
+### Removed
+- Support for Visual Studio Versions prior to 2019. Only VS 2019 is supported now.
+
+### Added
+- Project ID and DocData to RDT view (credit @Mohit-Chakraborty)
+- Window Frames view (credit @Mohit-Chakraborty)
+
+## Version 1.18.1209.0 (December 9th 2018)
+### Added
+- Support for Visual Studio 2019
+
 ## Version 1.13.00112.0
 ###
 - RDT: Update the RdtEntry's Moniker property if a document's moniker changes.
