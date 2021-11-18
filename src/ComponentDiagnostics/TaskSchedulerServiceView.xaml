@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Microsoft.VisualStudio.ComponentDiagnostics.TaskSchedulerServiceView"
+             x:Name="Root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Microsoft.VisualStudio.ComponentDiagnostics"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <local:TaskContextConverter x:Key="TaskContextConverter" />
+        <local:UtcToLocalTimeConverter x:Key="utcToLocalTimeConverter" />
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+
+        <DataTemplate x:Key="ContextCellTemplate">
+            <TextBlock Text="{Binding TaskContext, Mode=OneTime, Converter={StaticResource TaskContextConverter}}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="DependentTasksTemplate">
+            <StackPanel>
+                <TextBlock Text="n/a" x:Name="NoDependentTasksText" Visibility="Collapsed" />
+                <TextBlock x:Name="DependentTasksText" Visibility="Visible">
+                    <Run Text="{Binding Path=DependentTasksCount, Mode=OneTime}" /> tasks
+                </TextBlock>
+            </StackPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding DependentTasksCount}" Value="0">
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="DependentTasksText" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="NoDependentTasksText" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <ToolTip x:Key="DependentTasksToolTip">
+            <StackPanel>
+                <TextBlock FontWeight="Bold">Dependent Tasks:</TextBlock>
+                <ItemsControl ItemsSource="{Binding DependentTasks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Run>Task created on: </Run>
+                                <Run Text="{Binding CreationTime, Mode=OneTime, Converter={StaticResource utcToLocalTimeConverter}, ConverterParameter=HH:mm:ss.fff}"></Run>
+                                <Run>, State: </Run>
+                                <Run Text="{Binding TaskState, Mode=OneTime}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ToolTip>
+        
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ListView Name="TaskList" Grid.Row="0" ItemsSource="{Binding Path=Tasks, Mode=OneWay}" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Creation Time"   DisplayMemberBinding="{Binding CreationTime, Mode=OneTime, Converter={StaticResource utcToLocalTimeConverter}, ConverterParameter=HH:mm:ss.fff}" Width="Auto" />
+                    <GridViewColumn Header="Description"  DisplayMemberBinding="{Binding Description}" Width="150"/>
+                    <GridViewColumn Header="Context"      CellTemplate="{StaticResource ContextCellTemplate}" Width="150"/>
+                    <GridViewColumn Header="State"        DisplayMemberBinding="{Binding TaskState}" Width="100" />
+                    <GridViewColumn Header="Dependent Tasks" CellTemplate="{StaticResource DependentTasksTemplate}" Width="100" />
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                    <Setter Property="ToolTip" Value="{StaticResource DependentTasksToolTip}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DependentTasks}" Value="{x:Null}">
+                            <Setter Property="ToolTip" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <TextBlock Grid.Row="1" Margin="3">
+                <Hyperlink Click="OnClearClicked">Clear completed tasks...</Hyperlink>
+        </TextBlock>
+    </Grid>
+
+</UserControl>

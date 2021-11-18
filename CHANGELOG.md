@@ -1,6 +1,10 @@
 # Component Diagnostics
 All notable changes will be documented in this file.
 
+## Version 1.22.1117.0 (November 17th 2021)
+### Added
+- Support for VS 2022.
+
 ## Version 1.20.1010.0 (October 10th 2020)
 ### Changed
 - Migrated source code to GitHub.

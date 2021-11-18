@@ -1,0 +1,8 @@
+﻿<Border x:Uid="Border_1" x:Class="Microsoft.VisualStudio.ComponentDiagnostics.ExceptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             BorderBrush="Red" BorderThickness="4">
+    <!-- The error message text is bound to the "Message" property of the DataContext -->
+    <TextBlock x:Uid="TextBlock_1" Margin="4" TextWrapping="Wrap" Foreground="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" Text="{Binding Path=Message}" />
+</Border>

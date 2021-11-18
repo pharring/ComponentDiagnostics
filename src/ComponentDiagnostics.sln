@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.8
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentDiagnostics", "ComponentDiagnostics.csproj", "{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{987F17D6-CDCC-4A5F-A73B-4329E792DF0A}"
 	ProjectSection(SolutionItems) = preProject
 		..\.editorconfig = ..\.editorconfig
 		..\CHANGELOG.md = ..\CHANGELOG.md
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\Directory.Build.targets = ..\Directory.Build.targets
 		..\LICENSE = ..\LICENSE
 		..\marketplace\overview.md = ..\marketplace\overview.md
 		..\README.md = ..\README.md
@@ -25,16 +25,40 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{90291F
 		..\marketplace\images\Screenshot_Toolwindow.png = ..\marketplace\images\Screenshot_Toolwindow.png
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIX", "VSIX\VSIX.csproj", "{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ComponentDiagnostics", "ComponentDiagnostics\ComponentDiagnostics.shproj", "{17BCC730-CA0F-4468-A5EA-3F73DD4B4667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIX_Dev17", "VSIX_Dev17\VSIX_Dev17.csproj", "{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ComponentDiagnostics\ComponentDiagnostics.projitems*{1385f8b1-f2af-4f02-89b1-67b56fb78df9}*SharedItemsImports = 4
+		ComponentDiagnostics\ComponentDiagnostics.projitems*{17bcc730-ca0f-4468-a5ea-3f73dd4b4667}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Debug|x86.Build.0 = Debug|Any CPU
 		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{6848F5D0-54AE-4702-87EE-2BDFE0D714E2}.Release|x86.Build.0 = Release|Any CPU
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Debug|x86.ActiveCfg = Debug|x86
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Debug|x86.Build.0 = Debug|x86
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Release|x86.ActiveCfg = Release|x86
+		{1385F8B1-F2AF-4F02-89B1-67B56FB78DF9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
