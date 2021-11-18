@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>17bcc730-ca0f-4468-a5ea-3f73dd4b4667</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ComponentDiagnostics</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CustomTypeProviderAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DefaultProviderView.xaml.cs">
+      <DependentUpon>DefaultProviderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)DiagnosticsColors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionView.xaml.cs">
+      <DependentUpon>ExceptionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)FileChangeServiceView.xaml.cs">
+      <DependentUpon>FileChangeServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)GelTreeViewDataTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuidList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)KilobytesConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoadReasonConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationHistoryView.xaml.cs">
+      <DependentUpon>NavigationHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)NavItemToFontWeightConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OleComponentStatusIndicator.xaml.cs">
+      <DependentUpon>OleComponentStatusIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)OleComponentView.xaml.cs">
+      <DependentUpon>OleComponentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Package.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PackageCostTrackerView.xaml.cs">
+      <DependentUpon>PackageCostTrackerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)PackageManagerView.xaml.cs">
+      <DependentUpon>PackageManagerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)PkgCmdID.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Provider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProviderDataSourceWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProviderRegistration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtDiagnosticsDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtDiagnosticsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtEnumCollators.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtEventSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RdtView.xaml.cs">
+      <DependentUpon>RdtView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RunningDocumentInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RDT\RunningDocumentTable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RegisteredProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ServiceDataModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SortableListView.xaml.cs">
+      <DependentUpon>SortableListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)StatusIndicatorHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringLengthConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskContextConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskSchedulerServiceView.xaml.cs">
+      <DependentUpon>TaskSchedulerServiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Telemetry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThemedScrollbars\NativeWindowInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThemedScrollbars\ScrollbarDiagnosticsDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThemedScrollbars\ScrollbarDiagnosticsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThemedScrollbars\ScrollbarView.xaml.cs">
+      <DependentUpon>ScrollbarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ToolWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\IVsMonitorSelectionExPrivate.Dev11.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\IVsMonitorSelectionExPrivate.Dev12.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\SelectionData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\SelectionItemInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\SelectionLogItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\UIContextInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\UIContextLogItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIContext\UIContextView.xaml.cs">
+      <DependentUpon>UIContextView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UIElementIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UtcToLocalTimeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View.xaml.cs">
+      <DependentUpon>View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewCreationException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFrameEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFrameEnumCollators.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFrameEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFrameEventsSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFrameInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFramesCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFramesDataSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFramesDiagnosticsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFramesView.xaml.cs">
+      <DependentUpon>WindowFramesView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)DefaultProviderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ExceptionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)FileChangeServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)NavigationHistoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)OleComponentStatusIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)OleComponentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)PackageCostTrackerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)PackageManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)RDT\RdtView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)SortableListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)TaskSchedulerServiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ThemedScrollbars\ScrollbarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)UIContext\UIContextView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)WindowFrames\WindowFramesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)DiagnosticsColors.pkgdef" />
+    <Content Include="$(MSBuildThisFileDirectory)Resources\Commands.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)Resources\Package.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Toolwindow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)VSPackage.resx" />
+  </ItemGroup>
+</Project>

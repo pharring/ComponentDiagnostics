@@ -1,0 +1,21 @@
+﻿<ListView x:Class="Microsoft.VisualStudio.ComponentDiagnostics.SortableListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             GridViewColumnHeader.Click="ColumnHeaderClicked"
+             >
+    <ListView.Resources>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel>
+                <TextBlock Text="{Binding}"/>
+                <Path StrokeThickness="1" Fill="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" Data="M 0,4 L 3.5,0 L 7,4 L 0,4" />
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel>
+                <TextBlock Text="{Binding}"/>
+                <Path StrokeThickness="1" Fill="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" Data="M 0,0 L 3.5,4 L 7,0 L 0,0" />
+            </DockPanel>
+        </DataTemplate>
+    </ListView.Resources>
+</ListView>
